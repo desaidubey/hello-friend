@@ -1,10 +1,7 @@
-# Roadmap — LitDEX Champions NFT integration
+# Roadmap — Restore original LitDEX NFT page
 
-- [x] Explore source project (Hello There NFT dapp)
-- [x] Copy champions code into `src/champions/`
-- [x] Re-upload images (4 pass cards + 3 rarity icons) as this project's assets
-- [x] Rewrite imports (`@/` paths, asset pointers, removed tanstack-router usage)
-- [x] Port levels/manage view as in-page view (`ManageChampions`)
-- [x] `NFTsPage` now renders the full champions dashboard
-- [x] Champions button styles appended to `src/index.css` (scoped to `.champions-root`)
-- [x] Build + browser verification
+- [x] Locate the original NFT page in project history
+- [x] Restore the Genesis migration announcement and tier cards
+- [x] Remove the Champions dashboard from the NFT section
+- [ ] Verify the original page on mobile and desktop
+- [ ] Confirm the preview build is error-free
