@@ -407,3 +407,92 @@ body.hide-nav .litdex-mobile-hamburger { display: none !important; }
   from { transform: translateX(100%); }
   to { transform: translateX(-100%); }
 }
+
+/* ---------- Champions NFT section (ported styles, scoped) ---------- */
+.champions-root {
+  background: #0038ff;
+  color: #000;
+}
+.champions-root .btn-text {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.champions-root .btn-heading {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.champions-root .heading-ul { display: inline-block; }
+.champions-root .heading-ul::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin: 0.65rem 0 0;
+  border-radius: 9999px;
+  background: #0038ff;
+}
+@media (min-width: 768px) {
+  .champions-root .btn-heading { font-size: 1.5rem; }
+}
+.champions-root .btn {
+  --bink: #000000;
+  --bsurf: #ccff00;
+  position: relative;
+  isolation: isolate;
+  padding: 13px 24px;
+  border: 1px solid var(--bink);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--bink);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.champions-root .btn,
+.champions-root .btn-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.champions-root .btn-label {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  transition: inherit;
+}
+.champions-root .btn::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: var(--bink);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+}
+.champions-root .fx-9 { overflow: visible; }
+.champions-root .fx-9::before { display: none; }
+.champions-root .fx-9:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 -2px color-mix(in srgb, var(--bink) 30%, transparent);
+}
+.champions-root .btn-blue.fx-9:hover,
+.champions-root .btn-blue.fx-9:active {
+  box-shadow: 0 8px 0 -2px color-mix(in srgb, #000000 30%, transparent);
+}
+.champions-root .btn:disabled,
+.champions-root .btn[aria-disabled="true"] { cursor: not-allowed; opacity: 0.4; }
+.champions-root .btn:disabled:hover,
+.champions-root .btn[aria-disabled="true"]:hover { transform: none; box-shadow: none; }
+.champions-root .btn-pill { border-radius: 9999px; }
+.champions-root .btn-lime { --bink: #000000; --bsurf: #ccff00; background-color: #ccff00; }
+.champions-root .btn-blue { --bink: #ffffff; --bsurf: #0038ff; background-color: #0038ff; }
+.champions-root .btn-ghost { --bink: #ffffff; --bsurf: transparent; background-color: transparent; }
+.champions-root .btn-white { --bink: #0038ff; --bsurf: #ffffff; background-color: #ffffff; }
