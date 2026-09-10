@@ -1,0 +1,357 @@
+import { ethers } from "ethers";
+
+export type ChainConfig = {
+  chainId: number;
+  chainIdHex: string;
+  chainName: string;
+  rpcUrls: string[];
+  nativeCurrency: { name: string; symbol: string; decimals: number };
+  blockExplorerUrls: string[];
+};
+
+export const BASE_MAINNET: ChainConfig = {
+  chainId: 8453,
+  chainIdHex: "0x2105",
+  chainName: "Base Mainnet",
+  rpcUrls: ["https://mainnet.base.org"],
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  blockExplorerUrls: ["https://basescan.org"],
+};
+
+/** Back-compat alias — now points at Base Mainnet. */
+export const BASE_SEPOLIA = BASE_MAINNET;
+
+export const LITVM: ChainConfig = {
+  chainId: 4441,
+  chainIdHex: "0x1159",
+  chainName: "LitVM",
+  rpcUrls: ["https://liteforge.rpc.caldera.xyz/http"],
+  nativeCurrency: { name: "zkLTC", symbol: "zkLTC", decimals: 18 },
+  blockExplorerUrls: ["https://liteforge.explorer.caldera.xyz"],
+};
+
+export const KNOWN_CHAINS: ChainConfig[] = [BASE_MAINNET, LITVM];
+
+export function chainName(chainId: number | null): string {
+  if (chainId === null) return "Unknown";
+  return KNOWN_CHAINS.find((c) => c.chainId === chainId)?.chainName ?? `Chain ${chainId}`;
+}
+
+export const BASE_CHAIN_ID = BASE_MAINNET.chainId;
+export const BASE_CHAIN_HEX = BASE_MAINNET.chainIdHex;
+export const BASE_RPC_URL = BASE_MAINNET.rpcUrls[0]!;
+
+/** Real Base Mainnet USDC — the single payment token. */
+export const USDC_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+export const USDT_ADDRESS = USDC_ADDRESS;
+export const POINTS_ADDRESS = "0xDa73c4c7fcA2E688A77b04137d56740085c2B8E7";
+export const NFT_ADDRESS = "0xaCA7EFFcd0c4689D131C8d18C09ea1994F2A5d4d";
+
+export const API_BASE = "https://litdex-nft.test-hub.xyz";
+
+/** Predictable artwork URL served by the metadata API — lets us show art without an RPC round-trip. */
+export function artworkUrl(tokenId: bigint | number | string, version?: string): string {
+  const base = `${API_BASE}/metadata/${tokenId.toString()}/image`;
+  return version ? `${base}?v=${encodeURIComponent(version)}` : base;
+}
+
+/**
+ * Asks the metadata API to generate + cache the artwork for a token BEFORE we
+ * display it. The endpoint retries internally until on-chain state matches the
+ * expected rarity/level, so the follow-up image GET is instant.
+ * Never throws — a failed pre-warm just means the image loads the slow way.
+ */
+export async function prewarmMetadata(
+  tokenId: bigint | number | string,
+  expectedRarity: number | string,
+  expectedLevel: number,
+): Promise<boolean> {
+  const rarityName =
+    typeof expectedRarity === "number"
+      ? RARITY_NAMES[Math.max(0, Math.min(RARITY_NAMES.length - 1, expectedRarity))]!
+      : expectedRarity;
+  try {
+    const res = await fetch(`${API_BASE}/metadata/${tokenId.toString()}/prewarm`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        expectedRarity: rarityName,
+        expectedLevel: Math.max(1, Math.floor(expectedLevel)),
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/** Token ids minted in a transaction, read from the ERC-721 mint transfers. */
+export function mintedTokenIdsFromReceipt(
+  receipt: {
+    logs?: readonly { address?: string; topics: readonly string[]; data: string }[];
+  } | null,
+): bigint[] {
+  const iface = new ethers.Interface([
+    "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
+  ]);
+  const ids: bigint[] = [];
+  for (const log of receipt?.logs ?? []) {
+    if (log.address && log.address.toLowerCase() !== NFT_ADDRESS.toLowerCase()) continue;
+    try {
+      const parsed = iface.parseLog({ topics: [...log.topics], data: log.data });
+      if (parsed?.name === "Transfer" && String(parsed.args[0]) === ethers.ZeroAddress) {
+        ids.push(BigInt(parsed.args[2] as bigint));
+      }
+    } catch {
+      /* unrelated log */
+    }
+  }
+  return ids;
+}
+
+
+
+
+export const USDC_ABI = [
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function balanceOf(address) view returns (uint256)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+];
+
+export const USDT_ABI = USDC_ABI;
+
+export const POINTS_ABI = [
+  "function balance(address) view returns (uint256)",
+  "function claimed(address) view returns (uint256)",
+  "function claim(uint256 totalEarned, uint256 expiry, bytes signature) external",
+];
+
+export const NFT_ABI = [
+  "function mint() external",
+  "function mintBatch(uint256 quantity) external",
+  "function mintUSDC() external",
+  "function mintBatchUSDC(uint256 quantity) external",
+  "function mintWithVoucher((address wallet,uint256 discountBps,bytes32 nonce) voucher, bytes signature) external",
+  "function mintWithVouchersBatch((address wallet,uint256 discountBps,bytes32 nonce)[] vouchers, bytes[] signatures) external",
+  "function mintWithVoucherUSDC((address wallet,uint256 discountBps,bytes32 nonce) voucher, bytes signature) external",
+  "function mintWithVouchersBatchUSDC((address wallet,uint256 discountBps,bytes32 nonce)[] vouchers, bytes[] signatures) external",
+  "function levelUp(uint256 tokenId) external",
+  "function promote(uint256 tokenId) external",
+  "function repair(uint256 tokenId) external",
+  "function playPredictGame((uint256 tokenId,bool won,bytes32 nonce,uint256 expiry) result, bytes signature) external",
+  "function ownerOf(uint256 tokenId) view returns (address)",
+  "function balanceOf(address owner) view returns (uint256)",
+  "function tokenState(uint256 tokenId) view returns (uint8 rarity, uint8 level, bool damaged, uint32 gamesAtMaxLevel)",
+  "function tokenURI(uint256 tokenId) view returns (string)",
+  "function nextTokenId() view returns (uint256)",
+  "function pointsPerLevel(uint8 level) view returns (uint256)",
+  "function commonSupplyCap() view returns (uint256)",
+  "function rarityMinted(uint8 rarity) view returns (uint256)",
+  "function mintPriceUSDT() view returns (uint256)",
+  "function config(bytes32 key) view returns (uint256)",
+  "function transferFrom(address from, address to, uint256 tokenId) external",
+  "function approve(address to, uint256 tokenId) external",
+];
+
+export const CONFIG_REPAIR_COST = ethers.keccak256(ethers.toUtf8Bytes("repairCostUSDT"));
+export const CONFIG_GAMES_REQUIRED = ethers.keccak256(
+  ethers.toUtf8Bytes("gamesRequiredForPromotion"),
+);
+
+export const RARITY_NAMES = ["Common", "Rare", "Epic", "Legend"] as const;
+export const MAX_LEVEL = 9;
+
+export function formatTierLabel(
+  nft: { rarity: number; level: number },
+  oneBased = false,
+): string {
+  if (nft.rarity === 3) return "MAX";
+  return `Tier ${oneBased ? nft.level + 1 : nft.level}`;
+}
+
+export const RARITY_CLASS: Record<number, string> = {
+  0: "bg-secondary text-secondary-foreground",
+  1: "bg-primary/20 text-primary",
+  2: "bg-accent/25 text-accent",
+  3: "bg-chart-3/25 text-chart-3",
+};
+
+export function truncateAddress(addr: string) {
+  return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+}
+
+export function formatUsdt(value: bigint) {
+  const whole = value / 1_000_000n;
+  const frac = value % 1_000_000n;
+  if (frac === 0n) return whole.toString();
+  return `${whole}.${frac.toString().padStart(6, "0").replace(/0+$/, "")}`;
+}
+
+export function formatPoints(value: bigint | string) {
+  const v = typeof value === "string" ? value : value.toString();
+  return v.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export function openSeaUrl(tokenId: string | bigint) {
+  return `https://opensea.io/assets/base/${NFT_ADDRESS}/${tokenId.toString()}`;
+}
+
+export function parseWalletError(err: unknown, fallback: string) {
+  const e = err as { code?: string | number; shortMessage?: string; message?: string };
+  if (e?.code === "ACTION_REJECTED" || e?.code === 4001) return "Transaction rejected in wallet.";
+  return fallback;
+}
+
+export type Voucher = {
+  category: string;
+  wallet: string;
+  discountBps: number;
+  nonce: string;
+  signature: string;
+};
+
+export type VoucherResponse = {
+  wallet: string;
+  totalVouchers: number;
+  vouchers: Voucher[];
+  whitelistActive?: boolean;
+  /** Unix seconds (or ms) when the whitelist window opens. */
+  whitelistStart?: number | string;
+};
+
+export function voucherCategoryId(category: string): number {
+  const i = RARITY_NAMES.findIndex((r) => r.toLowerCase() === category.toLowerCase());
+  return i >= 0 ? i : 0;
+}
+
+/** Accepts 0-3, "0"-"3" or "Common"/"Rare"/"Epic"/"Legend" (any case). */
+export function parseRarity(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value >= 0 && value <= 3 ? Math.trunc(value) : null;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed === "") return null;
+    if (/^\d+$/.test(trimmed)) {
+      const n = Number(trimmed);
+      return n >= 0 && n <= 3 ? n : null;
+    }
+    const i = RARITY_NAMES.findIndex((r) => r.toLowerCase() === trimmed.toLowerCase());
+    return i >= 0 ? i : null;
+  }
+  return null;
+}
+
+export function discountLabel(discountBps: number) {
+  return `${discountBps / 100}%`;
+}
+
+export function discountedPrice(price: bigint, discountBps: number) {
+  return (price * BigInt(10000 - discountBps)) / 10000n;
+}
+
+export type GameStartResponse = {
+  sessionId: string;
+  tokenId: string | number;
+  livesRemaining: number;
+  targetRound: number;
+  targetTimeMs: number;
+};
+
+export type GameRoundResult = {
+  round: number;
+  guess: number;
+  correctNumber: number;
+  correct: boolean;
+};
+
+export type GameCompleteResponse = {
+  isComplete: true;
+  correctCount: number;
+  won: boolean;
+  results: GameRoundResult[];
+  gameResult: { tokenId: string | number; won: boolean; nonce: string; expiry: string | number };
+  signature: string;
+  verify: {
+    drandRound: number | string;
+    drandRandomness: string;
+    drandSignature: string;
+    drandVerifyUrl: string;
+    note: string;
+  };
+};
+
+export type OwnedNft = {
+  tokenId: bigint;
+  rarity: number;
+  level: number;
+  damaged: boolean;
+  gamesAtMaxLevel: number;
+};
+
+type Tx = ethers.ContractTransactionResponse;
+
+export interface NftContract extends ethers.BaseContract {
+  mint(): Promise<Tx>;
+  mintBatch(quantity: number): Promise<Tx>;
+  mintUSDC(): Promise<Tx>;
+  mintBatchUSDC(quantity: number): Promise<Tx>;
+  mintWithVoucher(
+    voucher: [string, number, string],
+    signature: string,
+  ): Promise<Tx>;
+  mintWithVouchersBatch(
+    vouchers: [string, number, string][],
+    signatures: string[],
+  ): Promise<Tx>;
+  mintWithVoucherUSDC(
+    voucher: [string, number, string],
+    signature: string,
+  ): Promise<Tx>;
+  mintWithVouchersBatchUSDC(
+    vouchers: [string, number, string][],
+    signatures: string[],
+  ): Promise<Tx>;
+  levelUp(tokenId: bigint): Promise<Tx>;
+  promote(tokenId: bigint): Promise<Tx>;
+  repair(tokenId: bigint): Promise<Tx>;
+  playPredictGame(
+    result: [bigint, boolean, string, bigint],
+    signature: string,
+  ): Promise<Tx>;
+  transferFrom(from: string, to: string, tokenId: bigint): Promise<Tx>;
+  ownerOf(tokenId: bigint): Promise<string>;
+  balanceOf(owner: string): Promise<bigint>;
+  tokenState(tokenId: bigint): Promise<[bigint, bigint, boolean, bigint]>;
+  tokenURI(tokenId: bigint): Promise<string>;
+  nextTokenId(): Promise<bigint>;
+  pointsPerLevel(level: number): Promise<bigint>;
+  commonSupplyCap(): Promise<bigint>;
+  rarityMinted(rarity: number): Promise<bigint>;
+  mintPriceUSDT(): Promise<bigint>;
+  config(key: string): Promise<bigint>;
+}
+
+export interface PointsContract extends ethers.BaseContract {
+  balance(account: string): Promise<bigint>;
+  claimed(account: string): Promise<bigint>;
+  claim(totalEarned: string, expiry: string, signature: string): Promise<Tx>;
+}
+
+export interface UsdtContract extends ethers.BaseContract {
+  approve(spender: string, amount: bigint): Promise<Tx>;
+  balanceOf(account: string): Promise<bigint>;
+  allowance(owner: string, spender: string): Promise<bigint>;
+}
+
+export function nftContract(runner: ethers.ContractRunner): NftContract {
+  return new ethers.Contract(NFT_ADDRESS, NFT_ABI, runner) as unknown as NftContract;
+}
+export function pointsContract(runner: ethers.ContractRunner): PointsContract {
+  return new ethers.Contract(POINTS_ADDRESS, POINTS_ABI, runner) as unknown as PointsContract;
+}
+export function usdcContract(runner: ethers.ContractRunner): UsdtContract {
+  return new ethers.Contract(USDC_ADDRESS, USDC_ABI, runner) as unknown as UsdtContract;
+}
+export const usdtContract = usdcContract;
+
