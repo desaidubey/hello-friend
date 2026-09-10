@@ -1,7 +1,7 @@
-# Roadmap — Restore original LitDEX NFT page
+# Roadmap — NFT video showcase
 
-- [x] Locate the original NFT page in project history
-- [x] Restore the Genesis migration announcement and tier cards
-- [x] Remove the Champions dashboard from the NFT section
-- [x] Verify the original page on mobile and desktop
+- [x] Remove all previous NFT-page content
+- [x] Add the supplied showcase video in a browser-compatible format
+- [x] Add matching Mint your NFT and Trade your NFT action panels
+- [x] Verify the video, links, and responsive layout
 - [x] Confirm the preview build is error-free

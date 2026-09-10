@@ -496,3 +496,91 @@ body.hide-nav .litdex-mobile-hamburger { display: none !important; }
 .champions-root .btn-blue { --bink: #ffffff; --bsurf: #0038ff; background-color: #0038ff; }
 .champions-root .btn-ghost { --bink: #ffffff; --bsurf: transparent; background-color: transparent; }
 .champions-root .btn-white { --bink: #0038ff; --bsurf: #ffffff; background-color: #ffffff; }
+
+/* NFT video showcase */
+.nft-showcase-page {
+  --nft-blue: #0038ff;
+  --nft-lime: #ccff00;
+  --nft-ink: #000000;
+  --nft-panel: #f4f4f2;
+  background: var(--color-brand-bg);
+}
+.nft-showcase-video {
+  display: block;
+  aspect-ratio: 8 / 3;
+  border: 1px solid var(--color-brand-border);
+  border-radius: 8px;
+  background: var(--nft-ink);
+  object-fit: cover;
+}
+.nft-action-panel {
+  display: flex;
+  min-height: 300px;
+  flex-direction: column;
+  align-items: center;
+  padding: 42px 40px 40px;
+  border-radius: 8px;
+  background: var(--nft-panel);
+  color: var(--nft-ink);
+  text-align: center;
+}
+.nft-action-heading,
+.nft-action-description,
+.nft-action-button {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.nft-action-heading {
+  font-size: clamp(1.25rem, 2vw, 2rem);
+  font-weight: 700;
+}
+.nft-action-rule {
+  width: 100%;
+  height: 4px;
+  margin-top: 18px;
+  border-radius: 9999px;
+  background: var(--nft-blue);
+}
+.nft-action-description {
+  margin-top: 14px;
+  color: #737373;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.nft-action-button {
+  display: inline-flex;
+  width: 100%;
+  min-height: 58px;
+  margin-top: auto;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--nft-ink);
+  border-radius: 9999px;
+  background: var(--nft-lime);
+  color: var(--nft-ink);
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.nft-action-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 -2px rgb(0 0 0 / 30%);
+}
+.nft-action-button:focus-visible {
+  outline: 3px solid var(--nft-blue);
+  outline-offset: 3px;
+}
+@media (max-width: 767px) {
+  .nft-showcase-page { padding-inline: 12px; }
+  .nft-showcase-video { aspect-ratio: 16 / 9; object-fit: contain; }
+  .nft-action-panel { min-height: 250px; padding: 28px 20px 24px; }
+  .nft-action-rule { margin-top: 14px; }
+  .nft-action-button { min-height: 54px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nft-action-button { transition: none; }
+  .nft-action-button:hover { transform: none; }
+}
