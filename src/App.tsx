@@ -36,8 +36,6 @@ import {
   RefreshCw,
   Sun,
   Moon,
-  Camera,
-  Check,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -1005,7 +1003,7 @@ const NFTsPage = () => {
         <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-2 md:gap-8">
           {actions.map((action) => (
             <section key={action.href} className="nft-action-panel">
-              <h1 className="nft-action-heading">{action.title}</h1>
+              <h2 className="nft-action-heading">{action.title}</h2>
               <div className="nft-action-rule" />
               <p className="nft-action-description">{action.description}</p>
               <a
