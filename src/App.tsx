@@ -996,7 +996,9 @@ const NFTsPage = () => {
           loop
           muted
           playsInline
-          controls
+          disablePictureInPicture
+          controlsList="nodownload noplaybackrate noremoteplayback"
+          onContextMenu={(event) => event.preventDefault()}
           aria-label="LitDEX NFT collection showcase"
         />
 
