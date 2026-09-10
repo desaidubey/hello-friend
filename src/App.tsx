@@ -50,6 +50,7 @@ import BridgeCard from './components/ui/bridge-card';
 import { AnimatedNavFramer } from './components/ui/navigation-menu';
 import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
 import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from './lib/feedback';
+import nftShowcaseVideo from './assets/litdex-nft-showcase.mp4.asset.json';
 
 // --- Types ---
 type PageID = 'swap' | 'pool' | 'deploy' | 'points' | 'checkin' | 'nfts' | 'messenger' | 'quests' | 'games' | 'faucet' | 'hub' | 'chatui';
@@ -966,94 +967,57 @@ const CheckinPage = () => {
   };
 
 
-type NFTTier = "common" | "rare" | "epic";
-
-const NFT_TIER_META = [
-  { nftType: 1 as const, name: "LitShard", rarity: "COMMON", tier: "common" as NFTTier, label: "LS", color: "#888888", cost: 1000,  maxSupply: 9999, rewards: "0.0001 zkLTC + 2 LDEX + 2 USDC" },
-  { nftType: 2 as const, name: "LitCore",  rarity: "RARE",   tier: "rare"   as NFTTier, label: "LC", color: "#F97316", cost: 5000,  maxSupply: 4999, rewards: "0.0005 zkLTC + 10 LDEX + 5 USDC" },
-  { nftType: 3 as const, name: "LitGod",   rarity: "EPIC",   tier: "epic"   as NFTTier, label: "LG", color: "#a855f7", cost: 10000, maxSupply: 999,  rewards: "0.001 zkLTC + 20 LDEX + 10 USDC" },
-];
-
 // --- Page: NFTs ---
 const NFTsPage = () => {
+  const actions = [
+    {
+      title: "Mint your NFT",
+      description: "Enter the LitDEX collection and mint your champion.",
+      label: "Mint your NFT",
+      href: "https://nft.test-hub.xyz/",
+    },
+    {
+      title: "Trade your NFT",
+      description: "Explore and trade the LitDEX collection on OpenSea.",
+      label: "Trade your NFT",
+      href: "https://opensea.io/collection/litdex",
+    },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 container mx-auto"
+      className="nft-showcase-page min-h-[calc(100vh-80px)] px-4 py-8 md:px-8 md:py-12"
     >
-      <div className="w-full max-w-3xl">
-        {/* Snapshot visual */}
-        <div className="flex justify-center mb-10">
-          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full bg-brand-surface border border-brand-border flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 rounded-full border border-white/10" />
-            <div className="snapshot-scan-line z-20" />
-            <Camera size={48} className="text-white/80 relative z-10" />
-            <div className="absolute bottom-0 right-0 w-12 h-12 rounded-full bg-white text-black flex items-center justify-center border-4 border-brand-surface z-30">
-              <Check size={24} strokeWidth={3} />
-            </div>
-          </div>
-        </div>
+      <div className="mx-auto w-full max-w-[1760px]">
+        <video
+          className="nft-showcase-video w-full"
+          src={nftShowcaseVideo.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls
+          aria-label="LitDEX NFT collection showcase"
+        />
 
-        {/* Heading */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">
-            🚀 LitDEX Genesis NFTs Are Migrating to Mainnet
-          </h1>
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-white">
-              Snapshot Taken
-              <Check size={16} className="text-white" />
-            </span>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-brand-text-muted">
-              Ready for Mint
-            </span>
-          </div>
-        </div>
-
-        {/* Body */}
-        <div className="rounded-2xl border border-brand-border bg-brand-surface p-6 md:p-10 mb-10">
-          <p className="text-base md:text-lg text-brand-text-muted leading-relaxed text-center mb-6">
-            The Genesis collection is moving from LitVM testnet to mainnet. 
-            Testnet holders of LitShard, LitCore, and LitGod NFTs have been snapshotted 
-            and will receive exclusive discounts on mainnet mint.
-          </p>
-          <p className="text-base md:text-lg text-brand-text-muted leading-relaxed text-center mb-6">
-            Details on mint price, total supply, and discount tiers will be revealed soon.
-          </p>
-          <p className="text-base md:text-lg text-brand-text-muted leading-relaxed text-center">
-            Stay tuned on our official channels for the mainnet launch date.
-          </p>
-        </div>
-
-        {/* Tier visual reference */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {NFT_TIER_META.map((tier) => (
-            <div key={tier.nftType} className="rounded-2xl border border-brand-border bg-brand-surface p-5 flex flex-col items-center text-center hover:border-white/20 transition-all">
-              <div className="relative w-20 h-20 rounded-full bg-brand-surface-2 border border-brand-border flex items-center justify-center mb-4 overflow-hidden">
-                {tier.tier === "rare" ? (
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 6px #F97316) drop-shadow(0 0 12px #F97316aa)" }}>
-                    <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                    <polyline points="2 17 12 22 22 17" />
-                    <polyline points="2 12 12 17 22 12" />
-                  </svg>
-                ) : tier.tier === "epic" ? (
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px #a855f7) drop-shadow(0 0 20px #a855f7) drop-shadow(0 0 40px #a855f7)" }}>
-                    <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                    <polyline points="2 17 12 22 22 17" />
-                    <polyline points="2 12 12 17 22 12" />
-                  </svg>
-                ) : (
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                    <polyline points="2 17 12 22 22 17" />
-                    <polyline points="2 12 12 17 22 12" />
-                  </svg>
-                )}
-              </div>
-              <h3 className="text-lg font-bold text-white mb-1">{tier.name}</h3>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-brand-text-muted">{tier.rarity}</p>
-            </div>
+        <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-2 md:gap-8">
+          {actions.map((action) => (
+            <section key={action.href} className="nft-action-panel">
+              <h1 className="nft-action-heading">{action.title}</h1>
+              <div className="nft-action-rule" />
+              <p className="nft-action-description">{action.description}</p>
+              <a
+                className="nft-action-button"
+                href={action.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {action.label}
+                <ExternalLink size={16} aria-hidden="true" />
+              </a>
+            </section>
           ))}
         </div>
       </div>
