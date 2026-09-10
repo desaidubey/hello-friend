@@ -55,6 +55,7 @@ import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from '
 type PageID = 'swap' | 'pool' | 'deploy' | 'points' | 'checkin' | 'nfts' | 'messenger' | 'quests' | 'games' | 'faucet' | 'hub' | 'chatui';
 import HubPage from './components/HubPage';
 import ChatUIPage from './components/ChatUIPage';
+import { ChampionsDashboard } from '@/champions/ChampionsDashboard';
 
 interface NavItemProps {
   icon: any;
