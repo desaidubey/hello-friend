@@ -65,24 +65,23 @@ const HARD_SHADOW =
 const NAV_LINKS: Array<[string, string, boolean?]> = [
   ["Champions", "#champions", false],
   ["My points", "#points", false],
-  ["Levels", "/levels", false],
   ["Mint", "#mint", false],
   ["Game", "#game", true],
 ];
 
-export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
+export const Component = ({ onMintClick, onManage }: { onMintClick?: () => void; onManage?: () => void }) => {
   const { address, connect, connecting, hasWallet, disconnect, chainId } = useWallet();
   const onBase = chainId === 8453;
   const [gameOpen, setGameOpen] = useState(false);
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#0038FF] font-sans selection:bg-[#CCFF00] selection:text-black">
+    <div className="champions-root relative flex min-h-screen w-full flex-col overflow-hidden bg-[#0038FF] font-sans selection:bg-[#CCFF00] selection:text-black">
       <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
       <nav className="relative z-20 mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-6 md:px-10 md:py-8">
         <div className="flex items-center gap-1">
           <img
-            src="/favicon-512x512.png"
+            src="/favicon.png"
             alt="Litdex logo"
             className="h-8 w-8 rounded-lg shadow-sm md:h-10 md:w-10"
           />
@@ -99,6 +98,14 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
         </div>
 
         <div className="hidden items-center space-x-2 md:flex">
+          {onManage && (
+            <button
+              onClick={onManage}
+              className="btn fx-9 btn-pill btn-ghost nav-link"
+            >
+              <span className="btn-label">Levels</span>
+            </button>
+          )}
           {NAV_LINKS.map(([item, href, isGame]) =>
             isGame ? (
               <button
