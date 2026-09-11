@@ -267,7 +267,7 @@ const SwapPage = () => {
                 />
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-bold text-sm">BetsOnBlock</div>
-                  <div className="text-orange-500 text-xs">☁️ Earn Extra Points</div>
+                  
                 </div>
                 <span className="text-orange-500 text-xl font-bold">→</span>
               </a>
@@ -438,6 +438,9 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               <span className="px-2 py-0.5 bg-white/10 text-white text-[9px] font-bold uppercase tracking-widest rounded border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                 Accumulated Points
               </span>
+              <span className="px-2 py-0.5 bg-white/10 text-white text-[9px] font-bold uppercase tracking-widest rounded border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                Snapshot Taken
+              </span>
             </div>
             <div className="text-8xl font-black text-white tracking-tighter leading-none select-none filter drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
               {loading ? (
@@ -454,86 +457,10 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full lg:w-auto">
-             <div className="px-6 py-5 bg-white/[0.02] border border-white/5 rounded-2xl group hover:border-white/10 transition-all backdrop-blur-md">
-                <div className="text-[9px] font-bold text-brand-text-muted uppercase tracking-[0.2em] mb-2 flex items-center justify-between">
-                  Deploy Daily
-                  <Rocket size={10} className="text-white/40" />
-                </div>
-                <div className="font-bold text-white text-xl tracking-tight">
-                  {dailyDeploy} <span className="text-xs text-white/20 font-medium">/ 500</span>
-                </div>
-             </div>
-             <div className="px-6 py-5 bg-white/[0.02] border border-white/5 rounded-2xl group hover:border-white/10 transition-all backdrop-blur-md">
-                <div className="text-[9px] font-bold text-brand-text-muted uppercase tracking-[0.2em] mb-2 flex items-center justify-between">
-                  Message Daily
-                  <MessageSquare size={10} className="text-white/40" />
-                </div>
-                <div className="font-bold text-white text-xl tracking-tight">
-                  {dailyMsg} <span className="text-xs text-white/20 font-medium">/ 20</span>
-                </div>
-             </div>
-          </div>
         </div>
 
-        {/* Incentive / Check-in Status */}
-        <div className="mt-8 flex justify-end">
-           <div className={`px-4 py-2 border rounded-xl flex items-center gap-3 transition-all ${isCheckedIn ? 'bg-white/10 border-white/20 opacity-60' : 'bg-white/5 border-white/10 animate-pulse'}`}>
-             <div className="text-left">
-               <p className="text-[8px] font-black uppercase tracking-widest text-white/40">Daily Check-in</p>
-               <p className="text-[10px] font-bold text-white uppercase tracking-widest">
-                 {isCheckedIn ? 'Checked In Today' : 'Pending +10 PTS'}
-               </p>
-             </div>
-             <CalendarCheck size={14} className={isCheckedIn ? 'text-white/60' : 'text-white'} />
-           </div>
-        </div>
-
-        {/* Progress System */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Deployments</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailyDeploy}/500</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${deployProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-           
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Social Messages</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailyMsg}/20</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${msgProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Swaps</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailySwap}/100</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${swapProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Liquidity (Pool)</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailyPool}/100</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${poolProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-        </div>
-        
-        <div className="mt-8">
-          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">Reset protocol active in {timeLeft}</p>
+        <div className="mt-8 relative z-10">
+          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">Points collection has ended. Final snapshot has been taken.</p>
         </div>
       </Card>
 
@@ -572,9 +499,6 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    +10 PTS
-                  </div>
                   <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Daily Limit: 1/1</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
@@ -602,10 +526,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    +5 PTS
-                  </div>
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Daily Limit: 100 PTS</span>
+                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Deploy Contracts</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
                    Command <ArrowRight size={14} />
@@ -632,9 +553,6 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    VAR PTS
-                  </div>
                   <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Quest Based</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
@@ -662,10 +580,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    +2 PTS
-                  </div>
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Daily Limit: 20 PTS</span>
+                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">On-chain Messaging</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
                    Transmit <ArrowRight size={14} />
@@ -735,7 +650,6 @@ const CheckinPage = () => {
       });
 
       const rows: { label: string; value: string }[] = [
-        { label: "BASE POINTS", value: "+10 PTS" },
         { label: "INCENTIVE YIELD", value: `+${Number(ldexVal).toLocaleString()} LDEX` },
       ];
       rows.push({ label: "STREAK", value: `Day ${Number(newInfo.streak)}` });
@@ -752,11 +666,6 @@ const CheckinPage = () => {
             type: "checkin",
             title: "Daily Check-in",
             message: `Day ${Number(newInfo.streak)} streak! Earned ${ldexVal} LDEX`,
-          });
-          addNotif(address, {
-            type: "points",
-            title: "Points Earned",
-            message: `+10 points earned from daily check-in`,
           });
         }
       } catch { /* ignore */ }
@@ -972,13 +881,13 @@ const NFTsPage = () => {
       title: "Mint a Champion",
       description: "Enter the LitDEX collection and mint your champion.",
       label: "Mint a Champion",
-      href: "https://nft.test-hub.xyz/",
+      href: "https://litdex.test-hub.xyz/",
     },
     {
       title: "Trade Your Champions",
       description: "Explore and trade the LitDEX collection on OpenSea.",
       label: "Trade Your Champions",
-      href: "https://opensea.io/collection/litdex",
+      href: "https://litdex.test-hub.xyz/",
     },
   ];
 
@@ -1399,7 +1308,6 @@ const ERC20Form = ({ onDeployed }: any) => {
             title: "DAILY CAP REACHED",
             subtitle: "MAX 20 TOKEN DEPLOYS PER DAY",
             rows: [
-              { label: "BASE POINTS", value: "+0 PTS" },
               { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
               { label: "STATUS", value: "LIVE ON LITVM" },
             ],
@@ -1409,7 +1317,6 @@ const ERC20Form = ({ onDeployed }: any) => {
             title: "TOKEN DEPLOYED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
-              { label: "BASE POINTS", value: "+5 PTS" },
               { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
               { label: "STATUS", value: "LIVE ON LITVM" },
             ],
@@ -1604,12 +1511,8 @@ const ERC20Form = ({ onDeployed }: any) => {
 
             <div className="text-center space-y-2">
               <p className="text-[10px] font-bold text-brand-text-muted uppercase tracking-widest">Free deployment</p>
-              <div className="flex items-center justify-center gap-2 text-white/50">
-                <Sparkles size={12} />
-                <span className="text-[9px] font-bold uppercase tracking-widest">+5 points earned automatically ({deployDaily}/100 today)</span>
-              </div>
               <p className="text-[9px] text-brand-text-muted italic opacity-60">
-                Deploys via LitDEXDeployer • points credited automatically by relayer.
+                Deploys via LitDEXDeployer on LitVM.
               </p>
             </div>
 
@@ -1823,7 +1726,6 @@ contract MNFT is ERC721, Ownable {
       const ca = (result as any).tokenAddress as string | undefined;
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${result.txHash}`;
       awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 NFT-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       const shortHash = `${result.txHash.slice(0, 6)}...${result.txHash.slice(-4)}`;
       try {
@@ -1837,7 +1739,6 @@ contract MNFT is ERC721, Ownable {
         title: "NFT CONTRACT DEPLOYED",
         subtitle: "PROTOCOL VERIFICATION COMPLETE",
         rows: [
-          { label: "BASE POINTS", value: "+5 PTS" },
           { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "LIVE ON LITVM" },
@@ -2316,7 +2217,6 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
       awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 STAKING-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       {
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
@@ -2326,7 +2226,6 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
           title: "STAKING CONTRACT DEPLOYED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
-            { label: "BASE POINTS", value: "+5 PTS" },
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
@@ -2588,7 +2487,6 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
       awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 VESTING-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       {
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
@@ -2598,7 +2496,6 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
           title: "VESTING CONTRACT DEPLOYED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
-            { label: "BASE POINTS", value: "+5 PTS" },
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
@@ -2887,7 +2784,6 @@ contract LitVMTokenFactory is Ownable {
       });
       setTxInfo({ hash: res.txHash, address: res.tokenAddress });
       awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 FACTORY-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       {
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
@@ -2897,7 +2793,6 @@ contract LitVMTokenFactory is Ownable {
           title: "TOKEN FACTORY DEPLOYED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
-            { label: "BASE POINTS", value: "+5 PTS" },
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
@@ -3099,7 +2994,7 @@ const QuestsPage = () => {
       const d = await r.json().catch(() => ({}));
       if (r.ok && d?.success !== false) {
         setBobClaimed(true);
-        showInfo('+4000 PTS earned!');
+        showInfo('Claim recorded');
       } else {
         const msg = String(d?.error || d?.message || '').toLowerCase();
         if (msg.includes('already')) setBobClaimed(true);
@@ -3151,7 +3046,7 @@ const QuestsPage = () => {
       const d = await r.json().catch(() => ({}));
       if (r.ok && d?.success !== false) {
         setTasks(prev => prev.map(t => t.id === task.id ? { ...t, claimed: true } : t));
-        showInfo(`+${task.points} PTS earned!`);
+        showInfo('Task claimed');
       } else {
         const msg = String(d?.error || d?.message || '').toLowerCase();
         if (msg.includes('already')) {
@@ -3254,12 +3149,6 @@ const QuestsPage = () => {
           <div className="min-w-0">
             <h3 className={cn("font-semibold truncate", isDone ? "text-white/40" : "text-white")}>{t.title}</h3>
             <div className="flex items-center gap-2 mt-1">
-              <span className={cn(
-                "text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border",
-                isDone ? "border-white/5 text-white/30" : "border-white/15 text-white bg-white/5"
-              )}>
-                +{t.points} PTS
-              </span>
               <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">{groupTitle}</span>
             </div>
           </div>
@@ -3309,9 +3198,6 @@ const QuestsPage = () => {
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-white truncate">{t.title}</h3>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/15 text-white bg-white/5">
-                +{t.points || 50} PTS
-              </span>
               <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">Quote Tweets</span>
             </div>
           </div>
@@ -3319,7 +3205,7 @@ const QuestsPage = () => {
 
         {status === 'approved' ? (
           <div className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-green-500/30 text-green-400 bg-green-500/10 inline-block w-fit">
-            ✅ Approved +50 PTS
+            ✅ Approved
           </div>
         ) : status === 'pending' ? (
           <div className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/15 text-white bg-white/5 inline-block w-fit">
@@ -3374,13 +3260,9 @@ const QuestsPage = () => {
             <h1 className="text-xs font-bold uppercase tracking-[0.3em] text-white">Socials & Quests</h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1 h-1 rounded-full bg-white/40 animate-pulse" />
-              <span className="text-[10px] text-brand-text-muted font-medium uppercase tracking-widest">Earn Points</span>
+              <span className="text-[10px] text-brand-text-muted font-medium uppercase tracking-widest">Snapshot Taken</span>
             </div>
           </div>
-        </div>
-        <div className="text-right">
-          <div className="text-[9px] uppercase tracking-widest text-brand-text-muted">Available</div>
-          <div className="font-mono text-white text-xl font-bold">{totalEarned}<span className="text-brand-text-muted text-xs"> / {totalPossible} PTS</span></div>
         </div>
       </div>
 
@@ -3410,29 +3292,11 @@ const QuestsPage = () => {
                 className="shrink-0"
               />
               <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-white truncate">Bet 100 Times on BetsOnBlock</h3>
-                <p className="text-xs text-brand-text-muted mt-1">Place 100 bets on BetsOnBlock</p>
+                <h3 className="font-semibold text-white truncate">BetsOnBlock</h3>
+                <p className="text-xs text-brand-text-muted mt-1">Partner betting platform on LitDEX</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border border-orange-500/40 text-orange-400 bg-orange-500/10">
-                    +4000 PTS
-                  </span>
                   <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">Partner</span>
                 </div>
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] uppercase tracking-widest text-brand-text-muted font-bold">Progress</span>
-                <span className="font-mono text-xs text-white font-bold">
-                  {bobCount === null ? '—' : Math.min(bobCount, 100)} / 100
-                </span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden">
-                <div
-                  className="h-full bg-orange-500 transition-all"
-                  style={{ width: `${Math.min(100, ((bobCount ?? 0) / 100) * 100)}%` }}
-                />
               </div>
             </div>
 
@@ -7565,9 +7429,9 @@ const MessengerPage = () => {
 
       try {
         if (address) addNotif(address, {
-          type: "points",
+          type: "milestone",
           title: "Message Sent",
-          message: "+2 points earned from on-chain message",
+          message: "Your message was delivered on-chain",
         });
       } catch { /* ignore */ }
 

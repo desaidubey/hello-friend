@@ -366,7 +366,6 @@ export default function SwapCard({
           title: "SWAP CONFIRMED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
-            { label: "BASE POINTS", value: dailyUsed >= DAILY_CAP ? "+0 PTS (DAILY CAP)" : "+5 PTS" },
             { label: "SENT", value: `${fromAmount} ${ti}` },
             { label: "RECEIVED", value: `${toAmount} ${to}` },
             { label: "ROUTER", value: ROUTERS[rKey].label || "LitDEX" },
@@ -402,7 +401,6 @@ export default function SwapCard({
             title: "LIQUIDITY ADDED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
-              { label: "BASE POINTS", value: dailyUsed >= DAILY_CAP ? "+0 PTS (DAILY CAP)" : "+5 PTS" },
               { label: "PAIR", value: `${ta} / ${tb}` },
               { label: "STATUS", value: "POOL UPDATED" },
             ],
@@ -438,7 +436,7 @@ export default function SwapCard({
             title: "LIQUIDITY REMOVED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
-              { label: "BASE POINTS", value: dailyUsed >= DAILY_CAP ? "+0 PTS (DAILY CAP)" : "+5 PTS" },
+              
               { label: "PAIR", value: `${ta} / ${tb}` },
               { label: "STATUS", value: "POSITION CLOSED" }
             ],
@@ -489,14 +487,6 @@ export default function SwapCard({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {isConnected && (
-            <span
-              title={`${mode === "pool" ? "Pool" : "Swap"} points today (+5 each, resets daily)`}
-              className="italic text-[11px] font-medium text-white/70 tabular-nums px-2.5 py-1 rounded-full border border-white/10 bg-white/5"
-            >
-              {Math.min(dailyUsed, DAILY_CAP)}/{DAILY_CAP}
-            </span>
-          )}
           {mode === "pool" && (
             <div className="flex bg-brand-surface-2 rounded-lg p-1 border border-brand-border mr-2">
               <button

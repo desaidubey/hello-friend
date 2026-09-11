@@ -1058,7 +1058,7 @@ export default function ChatUIPage() {
       addNotif(wallet, {
         type: "gf",
         title: "Domain registered",
-        message: `${name}.lit is yours${buyDuration === 99 ? " forever" : ` for ${buyDuration} year${buyDuration > 1 ? "s" : ""}`}${pointsToAward ? ` · +${pointsToAward} pts` : ""}`,
+        message: `${name}.lit is yours${buyDuration === 99 ? " forever" : ` for ${buyDuration} year${buyDuration > 1 ? "s" : ""}`}`,
         link: "/chat",
       });
       showSuccess({
@@ -1067,7 +1067,6 @@ export default function ChatUIPage() {
         rows: [
           { label: "DURATION", value: buyDuration === 99 ? "Forever" : `${buyDuration} year${buyDuration > 1 ? "s" : ""}` },
           { label: "PRICE", value: `${buyPrice} zkLTC` },
-          ...(pointsToAward ? [{ label: "POINTS", value: `+${pointsToAward}` }] : []),
           { label: "TX", value: `${tx.hash.slice(0, 10)}...` },
         ],
       });
@@ -4526,7 +4525,6 @@ export default function ChatUIPage() {
                       )}
                       <div className="text-sm font-bold text-brand-text-primary">{d.label}</div>
                       <div className="text-xs text-brand-text-primary font-semibold tabular-nums mt-1">{d.price} zkLTC</div>
-                      <div className="text-[10px] text-brand-text-muted mt-0.5">+{d.points} pts</div>
                     </button>
                   ))}
                 </div>
