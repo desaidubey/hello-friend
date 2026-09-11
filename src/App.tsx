@@ -208,73 +208,8 @@ const SwapPage = () => {
       animate={{ opacity: 1, scale: 1 }} 
       className="flex flex-col items-center justify-center min-h-[80vh] px-4 w-full py-12"
     >
-      <div className="flex flex-wrap justify-center items-center gap-2 mb-6">
-        <button
-          onClick={() => { try { window.dispatchEvent(new CustomEvent('litdex:open-faucet')); } catch {} }}
-          className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 hover:bg-white/[0.06] transition-all text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur-xl"
-        >
-          <Droplets size={14} className="group-hover:text-white transition-colors" />
-          Faucet
-        </button>
-        <button
-          onClick={() => setShowBridge((v) => !v)}
-          className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 hover:bg-white/[0.06] transition-all text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur-xl"
-        >
-          {showBridge ? (
-            <>
-              <ArrowLeftRight size={14} className="group-hover:text-white transition-colors" />
-              ← Swap
-            </>
-          ) : (
-            <>
-              <span className="group-hover:text-white transition-colors">⛓️</span>
-              Cross Chain
-            </>
-          )}
-        </button>
-      </div>
       <div className="relative w-full max-w-[480px] overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
-          {showBridge ? (
-            <motion.div
-              key="bridge"
-              initial={{ x: "100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "100%", opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <BridgeCard className="brand-glow-hover transition-all duration-500" onNavigate={(p) => window.dispatchEvent(new CustomEvent('app:navigate', { detail: p }))} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="swap"
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <a
-                href="https://zkbet.vercel.app/bettingzone"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 w-full max-w-[480px] mx-auto mb-4 px-4 py-3 rounded-xl bg-brand-surface border border-orange-500 hover:bg-brand-surface-2 transition-colors"
-              >
-                <img
-                  src="https://raw.githubusercontent.com/sachinsahani-cloud/hello-friend/main/public/coins/logo.png"
-                  alt="BetsOnBlock"
-                  style={{ width: 44, height: 44, objectFit: "contain", background: "transparent" }}
-                  className="flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-white font-bold text-sm">BetsOnBlock</div>
-                  
-                </div>
-                <span className="text-orange-500 text-xl font-bold">→</span>
-              </a>
-              <SwapCard className="brand-glow-hover transition-all duration-500" />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <SwapCard className="brand-glow-hover transition-all duration-500" />
       </div>
     </motion.div>
   );
