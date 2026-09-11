@@ -200,81 +200,14 @@ const DeployerTotalCard = () => {
 
 /// --- Page: Swap ---
 const SwapPage = () => {
-  const eco = useEcosystemStats();
-  const [showBridge, setShowBridge] = useState(false);
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.98 }} 
       animate={{ opacity: 1, scale: 1 }} 
       className="flex flex-col items-center justify-center min-h-[80vh] px-4 w-full py-12"
     >
-      <div className="flex flex-wrap justify-center items-center gap-2 mb-6">
-        <button
-          onClick={() => { try { window.dispatchEvent(new CustomEvent('litdex:open-faucet')); } catch {} }}
-          className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 hover:bg-white/[0.06] transition-all text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur-xl"
-        >
-          <Droplets size={14} className="group-hover:text-white transition-colors" />
-          Faucet
-        </button>
-        <button
-          onClick={() => setShowBridge((v) => !v)}
-          className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 hover:bg-white/[0.06] transition-all text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur-xl"
-        >
-          {showBridge ? (
-            <>
-              <ArrowLeftRight size={14} className="group-hover:text-white transition-colors" />
-              ← Swap
-            </>
-          ) : (
-            <>
-              <span className="group-hover:text-white transition-colors">⛓️</span>
-              Cross Chain
-            </>
-          )}
-        </button>
-      </div>
       <div className="relative w-full max-w-[480px] overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
-          {showBridge ? (
-            <motion.div
-              key="bridge"
-              initial={{ x: "100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "100%", opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <BridgeCard className="brand-glow-hover transition-all duration-500" onNavigate={(p) => window.dispatchEvent(new CustomEvent('app:navigate', { detail: p }))} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="swap"
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <a
-                href="https://zkbet.vercel.app/bettingzone"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 w-full max-w-[480px] mx-auto mb-4 px-4 py-3 rounded-xl bg-brand-surface border border-orange-500 hover:bg-brand-surface-2 transition-colors"
-              >
-                <img
-                  src="https://raw.githubusercontent.com/sachinsahani-cloud/hello-friend/main/public/coins/logo.png"
-                  alt="BetsOnBlock"
-                  style={{ width: 44, height: 44, objectFit: "contain", background: "transparent" }}
-                  className="flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-white font-bold text-sm">BetsOnBlock</div>
-                  
-                </div>
-                <span className="text-orange-500 text-xl font-bold">→</span>
-              </a>
-              <SwapCard className="brand-glow-hover transition-all duration-500" />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <SwapCard className="brand-glow-hover transition-all duration-500" />
       </div>
     </motion.div>
   );
@@ -465,130 +398,6 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
       </Card>
 
 
-      {/* How to Earn Section */}
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-             <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white shadow-xl">
-                <Trophy size={24} />
-             </div>
-             <div>
-                <h2 className="text-2xl font-bold text-white tracking-tight italic">Protocol Missions</h2>
-                <p className="text-[10px] text-brand-text-muted uppercase font-bold tracking-[0.3em] mt-1">Complete tasks to increase network yield</p>
-             </div>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           {/* Check-in Card */}
-           <Card 
-            onClick={() => setPage('checkin')}
-            className="p-8 bg-black/40 border-white/5 hover:border-white/20 transition-all group flex flex-col justify-between h-56 cursor-pointer relative overflow-hidden backdrop-blur-xl"
-           >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] rounded-full blur-[40px] -mr-16 -mt-16 group-hover:bg-white/5 transition-colors" />
-              
-              <div className="flex gap-6 relative z-10">
-                 <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-xl group-hover:border-white/30 transition-all">
-                    <CalendarCheck size={28} />
-                 </div>
-                 <div className="pt-2">
-                    <h4 className="text-lg font-bold text-white tracking-tight">Daily Check-in</h4>
-                    <p className="text-[11px] text-brand-text-muted mt-2 leading-relaxed font-medium">Verify your network presence daily to receive a base incentive.</p>
-                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
-                <div className="flex items-center gap-3">
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Daily Limit: 1/1</span>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
-                   Initialize <ArrowRight size={14} />
-                </div>
-              </div>
-           </Card>
-
-           {/* Deploy Card */}
-           <Card 
-            onClick={() => setPage('deploy')}
-            className="p-8 bg-black/40 border-white/5 hover:border-white/20 transition-all group flex flex-col justify-between h-56 cursor-pointer relative overflow-hidden backdrop-blur-xl"
-           >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] rounded-full blur-[40px] -mr-16 -mt-16 group-hover:bg-white/5 transition-colors" />
-              
-              <div className="flex gap-6 relative z-10">
-                 <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-xl group-hover:border-white/30 transition-all">
-                    <Rocket size={28} />
-                 </div>
-                 <div className="pt-2">
-                    <h4 className="text-lg font-bold text-white tracking-tight">Contract Deployment</h4>
-                    <p className="text-[11px] text-brand-text-muted mt-2 leading-relaxed font-medium">Execute heavy network operations by launching tokens or factories.</p>
-                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
-                <div className="flex items-center gap-3">
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Deploy Contracts</span>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
-                   Command <ArrowRight size={14} />
-                </div>
-              </div>
-           </Card>
-
-           {/* Social Quest Card */}
-           <Card 
-            onClick={() => setPage('quests')}
-            className="p-8 bg-black/40 border-white/5 hover:border-white/20 transition-all group flex flex-col justify-between h-56 cursor-pointer relative overflow-hidden backdrop-blur-xl"
-           >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] rounded-full blur-[40px] -mr-16 -mt-16 group-hover:bg-white/5 transition-colors" />
-              
-              <div className="flex gap-6 relative z-10">
-                 <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-xl group-hover:border-white/30 transition-all">
-                    <Sparkles size={28} />
-                 </div>
-                 <div className="pt-2">
-                    <h4 className="text-lg font-bold text-white tracking-tight">Social Expansion</h4>
-                    <p className="text-[11px] text-brand-text-muted mt-2 leading-relaxed font-medium">Propagate protocol awareness through community engagement.</p>
-                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
-                <div className="flex items-center gap-3">
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Quest Based</span>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
-                   Engage <ArrowRight size={14} />
-                </div>
-              </div>
-           </Card>
-
-           {/* On-chain Msg Card */}
-           <Card 
-            onClick={() => setPage('messenger')}
-            className="p-8 bg-black/40 border-white/5 hover:border-white/20 transition-all group flex flex-col justify-between h-56 cursor-pointer relative overflow-hidden backdrop-blur-xl"
-           >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] rounded-full blur-[40px] -mr-16 -mt-16 group-hover:bg-white/5 transition-colors" />
-              
-              <div className="flex gap-6 relative z-10">
-                 <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-xl group-hover:border-white/30 transition-all">
-                    <MessageSquare size={28} />
-                 </div>
-                 <div className="pt-2">
-                    <h4 className="text-lg font-bold text-white tracking-tight">On-chain Communication</h4>
-                    <p className="text-[11px] text-brand-text-muted mt-2 leading-relaxed font-medium">Transmit peer-to-peer data directly within the protocol.</p>
-                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
-                <div className="flex items-center gap-3">
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">On-chain Messaging</span>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
-                   Transmit <ArrowRight size={14} />
-                </div>
-              </div>
-           </Card>
-        </div>
-      </div>
     </motion.div>
   );
 };
@@ -881,13 +690,13 @@ const NFTsPage = () => {
       title: "Mint a Champion",
       description: "Enter the LitDEX collection and mint your champion.",
       label: "Mint a Champion",
-      href: "https://litdex.test-hub.xyz/",
+      href: "https://nft.test-hub.xyz/",
     },
     {
       title: "Trade Your Champions",
       description: "Explore and trade the LitDEX collection on OpenSea.",
       label: "Trade Your Champions",
-      href: "https://litdex.test-hub.xyz/",
+      href: "https://opensea.io/collection/litdex",
     },
   ];
 
@@ -8329,7 +8138,7 @@ export default function App() {
       { id: 'nfts', icon: Sparkles, title: 'NFTs', desc: 'Exclusive LiteForge assets' },
       { id: 'messenger', icon: MessageSquare, title: 'Messenger', desc: 'On-chain communication' },
       { id: 'quests', icon: ListChecks, title: 'Social Quests', desc: 'Complete tasks to earn' },
-      { id: 'games', icon: Gamepad2, title: 'Games', desc: 'Play and earn zkLTC' },
+      
     ]
   };
 
