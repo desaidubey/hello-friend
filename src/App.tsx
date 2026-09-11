@@ -2740,20 +2740,6 @@ contract LitVMTokenFactory is Ownable {
 // --- Page: Quests ---
 const SOCIAL_API = 'https://game.test-hub.xyz';
 
-type SocialTask = {
-  id: string;
-  title: string;
-  description?: string;
-  url: string;
-  points: number;
-  icon?: string;
-  category: string;
-  claimed?: boolean;
-  submission_based?: boolean;
-  quote_status?: 'pending' | 'approved' | 'rejected' | null;
-};
-
-type Submission = { type: string; tweet_ref?: string; link: string; status: string; admin_note?: string };
 
 const QuestsPage = () => {
   return (
