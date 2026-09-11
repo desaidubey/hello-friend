@@ -267,7 +267,7 @@ const SwapPage = () => {
                 />
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-bold text-sm">BetsOnBlock</div>
-                  <div className="text-orange-500 text-xs">☁️ Earn Extra Points</div>
+                  
                 </div>
                 <span className="text-orange-500 text-xl font-bold">→</span>
               </a>
@@ -438,6 +438,9 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               <span className="px-2 py-0.5 bg-white/10 text-white text-[9px] font-bold uppercase tracking-widest rounded border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                 Accumulated Points
               </span>
+              <span className="px-2 py-0.5 bg-white/10 text-white text-[9px] font-bold uppercase tracking-widest rounded border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                Snapshot Taken
+              </span>
             </div>
             <div className="text-8xl font-black text-white tracking-tighter leading-none select-none filter drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
               {loading ? (
@@ -454,86 +457,10 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full lg:w-auto">
-             <div className="px-6 py-5 bg-white/[0.02] border border-white/5 rounded-2xl group hover:border-white/10 transition-all backdrop-blur-md">
-                <div className="text-[9px] font-bold text-brand-text-muted uppercase tracking-[0.2em] mb-2 flex items-center justify-between">
-                  Deploy Daily
-                  <Rocket size={10} className="text-white/40" />
-                </div>
-                <div className="font-bold text-white text-xl tracking-tight">
-                  {dailyDeploy} <span className="text-xs text-white/20 font-medium">/ 500</span>
-                </div>
-             </div>
-             <div className="px-6 py-5 bg-white/[0.02] border border-white/5 rounded-2xl group hover:border-white/10 transition-all backdrop-blur-md">
-                <div className="text-[9px] font-bold text-brand-text-muted uppercase tracking-[0.2em] mb-2 flex items-center justify-between">
-                  Message Daily
-                  <MessageSquare size={10} className="text-white/40" />
-                </div>
-                <div className="font-bold text-white text-xl tracking-tight">
-                  {dailyMsg} <span className="text-xs text-white/20 font-medium">/ 20</span>
-                </div>
-             </div>
-          </div>
         </div>
 
-        {/* Incentive / Check-in Status */}
-        <div className="mt-8 flex justify-end">
-           <div className={`px-4 py-2 border rounded-xl flex items-center gap-3 transition-all ${isCheckedIn ? 'bg-white/10 border-white/20 opacity-60' : 'bg-white/5 border-white/10 animate-pulse'}`}>
-             <div className="text-left">
-               <p className="text-[8px] font-black uppercase tracking-widest text-white/40">Daily Check-in</p>
-               <p className="text-[10px] font-bold text-white uppercase tracking-widest">
-                 {isCheckedIn ? 'Checked In Today' : 'Pending +10 PTS'}
-               </p>
-             </div>
-             <CalendarCheck size={14} className={isCheckedIn ? 'text-white/60' : 'text-white'} />
-           </div>
-        </div>
-
-        {/* Progress System */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Deployments</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailyDeploy}/500</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${deployProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-           
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Social Messages</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailyMsg}/20</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${msgProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Swaps</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailySwap}/100</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${swapProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-
-           <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-[9px] font-bold text-white uppercase tracking-[0.2em]">Liquidity (Pool)</div>
-                <div className="text-[9px] text-white/40 uppercase font-mono">{dailyPool}/100</div>
-              </div>
-              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${poolProgress}%` }} className="h-full rounded-full bg-white/40" />
-              </div>
-           </div>
-        </div>
-        
-        <div className="mt-8">
-          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">Reset protocol active in {timeLeft}</p>
+        <div className="mt-8 relative z-10">
+          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">Points collection has ended. Final snapshot has been taken.</p>
         </div>
       </Card>
 
