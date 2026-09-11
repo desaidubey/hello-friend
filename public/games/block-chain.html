@@ -305,7 +305,7 @@
 
   <div id="milestone-strip"></div>
 
-  <div id="combo">+5 PTS</div>
+  <div id="combo">Points paused</div>
   <div id="move-hint">SWIPE / ARROWS TO MERGE</div>
 
   <div id="panel">
@@ -313,6 +313,7 @@
       <div class="panel-title" id="panel-title">BLOCK CHAIN</div>
       <div class="panel-sub" id="panel-sub">Merge tiles · hit milestones · earn PTS</div>
       <div id="panel-body"></div>
+<div class="pp-banner" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#ffe97a;text-transform:uppercase;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:8px;padding:5px 8px;margin:8px 0;text-align:center">Points paused</div>
       <div class="panel-btns">
         <button class="panel-btn primary" id="btn-primary">PLAY</button>
         <button class="panel-btn" id="btn-exit">EXIT</button>
@@ -658,8 +659,8 @@
 
     const noGames = left <= 0;
     let body = `
-      <div class="panel-stat-row"><span class="lbl">Reward</span><span class="val">milestone tiles</span></div>
-      <div class="panel-stat-row"><span class="lbl">Cap / Game</span><span class="val">315 PTS</span></div>
+      <div class="panel-stat-row"><span class="lbl">Reward</span><span class="val">Points paused</span></div>
+      <div class="panel-stat-row"><span class="lbl">Cap / Game</span><span class="val">Points paused</span></div>
       <div class="panel-stat-row"><span class="lbl">Games Today</span><span class="val">${5 - left} / 5</span></div>
       <div class="panel-stat-row"><span class="lbl">Best Tile</span><span class="val">${ST.bestEver || 0}</span></div>
     `;
@@ -667,7 +668,7 @@
     for (const m of MILESTONES) {
       body += `<div style="background:rgba(15,25,45,0.8);border:1px solid rgba(140,180,255,0.18);border-radius:8px;padding:6px 4px;text-align:center;font-family:'JetBrains Mono',monospace;">
         <div style="font-size:11px;font-weight:700;color:#fff">${m.tile}</div>
-        <div style="font-size:9px;color:#ffe97a;margin-top:2px">+${m.reward}</div>
+        <div style="font-size:9px;color:#ffe97a;margin-top:2px">Points paused</div>
       </div>`;
     }
     body += '</div>';
@@ -997,17 +998,17 @@
   }
 
   function celebrateMilestone(m) {
-    showCombo(`${m.tile} · +${m.reward} PTS`);
+    showCombo(`${m.tile} · Points paused`);
     sndMilestone();
     addShake(8, 360);
     if (m.tile === 2048) {
       sndJackpot();
       addShake(14, 700);
-      showCombo(`2048 · +${m.reward} PTS · JACKPOT`);
+      showCombo(`2048 · Points paused · JACKPOT`);
     }
     const r = boardFrame.getBoundingClientRect();
     const fr = container.getBoundingClientRect();
-    popup(`+${m.reward} PTS`, r.left - fr.left + r.width / 2, r.top - fr.top + r.height / 2 - 30, 'green');
+    popup(`Points paused`, r.left - fr.left + r.width / 2, r.top - fr.top + r.height / 2 - 30, 'green');
     // Flash the milestone strip cell.
     const el = milestoneStrip.querySelector(`.ms[data-tile="${m.tile}"]`);
     if (el) {
@@ -1288,7 +1289,7 @@
       const left = stats ? Math.max(0, Number(stats.gamesLeft || 0)) : 0;
       ST.gamesLeft = left;
       const body = `
-        <div class="panel-big">+${awarded} PTS</div>
+        <div class="panel-big">Points paused</div>
         <div class="panel-stat-row"><span class="lbl">Highest Tile</span><span class="val">${highest}</span></div>
         <div class="panel-stat-row"><span class="lbl">Best Tile Ever</span><span class="val">${bestTile}</span></div>
         <div class="panel-stat-row"><span class="lbl">Moves</span><span class="val">${ST.moves.length}</span></div>

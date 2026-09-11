@@ -654,12 +654,13 @@
           </div>
           <div style="text-align:center;">
             <div style="font-family:'Fredoka One',cursive;font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:2px;margin-bottom:2px;">POINTS EARNED</div>
-            <div id="zk-earned-label" style="font-family:'Bangers',cursive;font-size:20px;color:#ffffff;">0</div>
+            <div id="zk-earned-label" style="font-family:'Bangers',cursive;font-size:14px;color:#ffe97a;">Points paused</div>
           </div>
         </div>
       </div>
 
-      <button class="start-btn" id="start-btn" style="opacity:0.5;pointer-events:none;">LOADING…</button>
+<div class="pp-banner" style="font-family:'Fredoka One',cursive;font-size:11px;letter-spacing:1px;color:#ffe97a;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:10px;padding:6px 10px;margin-bottom:14px;text-align:center">Points paused</div>
+            <button class="start-btn" id="start-btn" style="opacity:0.5;pointer-events:none;">LOADING…</button>
       <div id="nft-hint" style="display:none;font-family:'Fredoka One',cursive;color:rgba(255,255,255,0.55);margin-top:12px;font-size:13px;text-align:center;max-width:340px;">Hold an NFT for free games & bonuses</div>
       <div id="start-error" style="font-family:'Fredoka One',cursive;color:#ffffff;margin-top:14px;font-size:14px;text-align:center;max-width:340px;display:none;"></div>
     </div>
@@ -672,6 +673,7 @@
       <div class="go-stats" id="go-level">Reached Level 1</div>
       <div class="go-best" id="go-best">Best: 0</div>
 
+      <div class="pp-banner" style="font-family:'Fredoka One',cursive;font-size:11px;letter-spacing:1px;color:#ffe97a;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:10px;padding:6px 10px;margin:8px 0 14px;text-align:center">Points paused</div>
       <button class="start-btn" id="restart-btn">PLAY AGAIN</button>
       <button class="start-btn" id="exit-btn" style="margin-top:12px;background:rgba(255,255,255,0.08);">EXIT</button>
       <div id="go-error" style="font-family:'Fredoka One',cursive;color:#ffffff;margin-top:12px;font-size:13px;text-align:center;max-width:340px;display:none;"></div>
@@ -1986,9 +1988,9 @@ const LitDeX = (() => {
         const ptsEarned = data.pointsEarned || 0;
 
         const hudZk = el('hud-zk-today');
-        if (hudZk) hudZk.textContent = ptsEarned + ' PTS';
+        if (hudZk) hudZk.textContent = 'Points paused';
         const zkTodayCard = el('zk-earned-label');
-        if (zkTodayCard) zkTodayCard.textContent = ptsEarned + ' PTS';
+        if (zkTodayCard) zkTodayCard.textContent = 'Points paused';
 
         try {
           window.parent && window.parent.postMessage({

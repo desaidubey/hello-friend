@@ -3068,114 +3068,19 @@ const REWARD_TIERS = [
 ];
 
 const RewardTierFooter = () => (
-  <div className="mt-4 pt-3 border-t border-brand-border text-[10px] text-brand-text-muted space-y-0.5">
-    <div className="text-brand-text-primary font-bold mb-1.5">Weekly Rewards · Top 20</div>
-    {REWARD_TIERS.map((t) => (
-      <div key={t.range} className="flex items-center justify-between gap-2">
-        <span>{t.range}</span>
-        <span className="text-right text-brand-text-muted">
-          <span className="text-brand-text-primary">{t.ldex}</span> · {t.pts}
-        </span>
-      </div>
-    ))}
-    <div className="pt-2 opacity-70">Top 20 rewarded every Sunday midnight IST</div>
+  <div className="mt-4 pt-3 border-t border-brand-border text-[10px] text-brand-text-muted">
+    ⏸ Points paused
   </div>
 );
 
 const ConvertPointsCard = ({ wallet }: { wallet: string }) => {
-  const SIMPLE_API = 'https://game.test-hub.xyz';
-  const [pending, setPending] = useState<{ gamesPending: number; totalScore: number; pointsAvailable: number } | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState<{ text: string; tx?: string } | null>(null);
-  const [err, setErr] = useState('');
-
-  const fetchPending = async () => {
-    if (!wallet) return;
-    try {
-      const r = await fetch(`${SIMPLE_API}/simple/pending/${wallet}`);
-      if (r.ok) setPending(await r.json());
-    } catch {}
-  };
-
-  useEffect(() => {
-    fetchPending();
-    const t = setInterval(fetchPending, 15000);
-    return () => clearInterval(t);
-  }, [wallet]);
-
-  const handleClaim = async () => {
-    if (!wallet || loading) return;
-    setLoading(true);
-    setErr('');
-    setMsg(null);
-    try {
-      const r = await fetch(`${SIMPLE_API}/simple/claim-points`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet }),
-      });
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok || j?.success === false) throw new Error(j?.message || j?.error || 'Claim failed');
-      setMsg({ text: `✅ ${j.pointsCredited} pts credited to your Points balance`, tx: j.txHash });
-      fetchPending();
-    } catch (e: any) {
-      setErr(e?.message || 'Network error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const ptsAvailable = Number(pending?.pointsAvailable ?? 0);
-  const gamesPending = Number(pending?.gamesPending ?? 0);
-
   return (
     <div className="p-5 rounded-2xl font-mono bg-brand-surface border border-brand-border">
-      <div className="text-[11px] uppercase text-brand-text-muted mb-4">Convert Points</div>
-
-      <div className="space-y-2 mb-4">
-        <div className="flex justify-between text-[11px]">
-          <span className="text-brand-text-muted uppercase">Unclaimed Games</span>
-          <span className="text-brand-text-primary">{gamesPending}</span>
-        </div>
-        <div className="flex justify-between text-[11px]">
-          <span className="text-brand-text-muted uppercase">Pts Available</span>
-          <span className="text-brand-text-primary">{ptsAvailable.toLocaleString()} pts</span>
-        </div>
-        <div className="flex justify-between text-[11px]">
-          <span className="text-brand-text-muted uppercase">Conversion</span>
-          <span className="text-brand-text-primary">1 score → 0.3 pts</span>
-        </div>
-      </div>
-
-      <button
-        onClick={handleClaim}
-        disabled={loading || ptsAvailable <= 0}
-        className="w-full py-2.5 rounded-lg bg-brand-text-primary text-brand-bg font-mono font-bold text-[11px] uppercase tracking-widest disabled:opacity-50"
-      >
-        {loading
-          ? 'Claiming…'
-          : ptsAvailable > 0
-            ? `Claim ${ptsAvailable.toLocaleString()} pts`
-            : 'Play games to earn pts'}
-      </button>
-
-      {msg && (
-        <div className="mt-3 text-[11px] text-brand-text-primary">
-          {msg.text}
-          {msg.tx && (
-            <div className="mt-1">
-              <a href={`https://liteforge.explorer.caldera.xyz/tx/${msg.tx}`} target="_blank" rel="noreferrer" className="underline decoration-white/30 text-brand-text-primary break-all">View tx</a>
-            </div>
-          )}
-        </div>
-      )}
-      {err && <div className="mt-3 text-[11px]" style={{ color: '#c44' }}>{err}</div>}
-
-      <div className="mt-4 text-[10px] text-brand-text-muted">Points add to your on-chain Points balance instantly.</div>
+      <div className="text-[11px] uppercase text-brand-text-muted mb-2">Convert Points</div>
+      <div className="text-brand-text-primary text-xs">⏸ Points paused</div>
     </div>
   );
 };
-
 const MathSlashPage = ({ onBack }: { onBack: () => void }) => {
   const { address, isConnected } = useAccount();
   const SIMPLE_API = 'https://game.test-hub.xyz';
@@ -3558,7 +3463,7 @@ const MathSlashPage = ({ onBack }: { onBack: () => void }) => {
                   <td className="py-1">{i + 1}</td>
                   <td className="py-1">{mask(w)}</td>
                   <td className="py-1 text-right">{score.toLocaleString()}</td>
-                  <td className="py-1 text-right">{Math.floor(score * 0.3).toLocaleString()}</td>
+                  <td className="py-1 text-right text-[10px]">paused</td>
                 </tr>
               );
             })}
@@ -3572,6 +3477,7 @@ const MathSlashPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="math-slash-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
 
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {/* Stats (left) */}
@@ -3590,13 +3496,9 @@ const MathSlashPage = ({ onBack }: { onBack: () => void }) => {
                   <div className="text-[10px] uppercase text-brand-text-muted">Games Today</div>
                   <div className="text-brand-text-primary text-sm">{gamesPlayed} / {DAILY_LIMIT}</div>
                 </div>
-                <div className="mb-3">
-                  <div className="text-[10px] uppercase text-brand-text-muted">Total Points Earned</div>
-                  <div className="text-brand-text-primary text-sm">{Number(stats?.totalPointsClaimed ?? 0).toLocaleString()} pts</div>
-                </div>
                 <div className="mb-4">
-                  <div className="text-[10px] uppercase text-brand-text-muted">Rate</div>
-                  <div className="text-brand-text-primary text-xs">1 score = 0.3 pts</div>
+                  <div className="text-[10px] uppercase text-brand-text-muted">Points</div>
+                  <div className="text-brand-text-primary text-xs">⏸ Points paused</div>
                 </div>
                 <div className="pt-3 border-t border-brand-border">
                   <div className="text-[10px] uppercase text-brand-text-muted mb-2">Recent Games</div>
@@ -3615,7 +3517,7 @@ const MathSlashPage = ({ onBack }: { onBack: () => void }) => {
                         return (
                           <div key={i} className="flex items-center justify-between text-[10px]">
                             <span className="text-brand-text-primary">{score} score</span>
-                            <span className="text-brand-text-muted">{ptsRow} pts</span>
+                            <span className="text-brand-text-muted">paused</span>
                             {url ? (
                               <a href={url} target="_blank" rel="noreferrer" className="text-brand-text-primary underline decoration-white/30">tx</a>
                             ) : <span className="text-brand-text-muted">unclaimed</span>}
@@ -3753,10 +3655,8 @@ const MathSlashPage = ({ onBack }: { onBack: () => void }) => {
             <div className="text-brand-text-primary text-lg font-bold">{Number(global?.totalZkltc ?? 0).toFixed(6)}</div>
           </div>
           <div>
-            <div className="text-[10px] uppercase text-brand-text-muted">Total Points Distributed</div>
-            <div className="text-brand-text-primary text-lg font-bold">
-              {Math.floor(Number(global?.totalScore ?? 0) * 0.3).toLocaleString()}
-            </div>
+            <div className="text-[10px] uppercase text-brand-text-muted">Points</div>
+            <div className="text-brand-text-primary text-sm font-bold">⏸ Paused</div>
           </div>
         </div>
       )}
@@ -3932,6 +3832,7 @@ const PumpDumpPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pump-dump-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
 
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
@@ -3955,7 +3856,7 @@ const PumpDumpPage = ({ onBack }: { onBack: () => void }) => {
                   </div>
                   <div className="mb-3">
                     <div className="text-[10px] uppercase text-brand-text-muted">Per Correct</div>
-                    <div className="text-brand-text-primary text-sm">+{increment} PTS</div>
+                    <div className="text-brand-text-primary text-sm">⏸ Points paused</div>
                   </div>
                   <div className="mb-4">
                     <div className="text-[10px] uppercase text-brand-text-muted">Games Today</div>
@@ -4044,10 +3945,10 @@ const PumpDumpPage = ({ onBack }: { onBack: () => void }) => {
                     <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Final Pot</div>
                     <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4 }}>{gameOver.pot}</div>
                     <div style={{
-                      fontSize: 14, fontWeight: 700, marginTop: 6, marginBottom: 18,
-                      color: gameOver.profit >= 0 ? '#3ecf8e' : '#ef4956',
+                      fontSize: 11, fontWeight: 700, marginTop: 6, marginBottom: 18,
+                      color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em',
                     }}>
-                      {gameOver.profit >= 0 ? '+' : ''}{gameOver.profit} PTS
+                      ⏸ Points paused
                     </div>
 
                     <div style={{ display: 'grid', gap: 10, marginBottom: 18, textAlign: 'left' }}>
@@ -4231,6 +4132,7 @@ const LitTowerPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-tower-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
 
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
@@ -4250,11 +4152,7 @@ const LitTowerPage = ({ onBack }: { onBack: () => void }) => {
                   </div>
                   <div className="mb-3">
                     <div className="text-[10px] uppercase text-brand-text-muted">Reward</div>
-                    <div className="text-brand-text-primary text-sm">+{PER_CORRECT} PT / stack</div>
-                  </div>
-                  <div className="mb-3">
-                    <div className="text-[10px] uppercase text-brand-text-muted">Cap / Game</div>
-                    <div className="text-brand-text-primary text-sm">{maxPerGame}</div>
+                    <div className="text-brand-text-primary text-sm">⏸ Points paused</div>
                   </div>
                   <div className="mb-4">
                     <div className="text-[10px] uppercase text-brand-text-muted">Games Today</div>
@@ -4334,19 +4232,13 @@ const LitTowerPage = ({ onBack }: { onBack: () => void }) => {
                       Session ended
                     </div>
 
-                    <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Banked</div>
-                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4, color: '#3ecf8e' }}>+{gameOver.awarded}</div>
-                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>POINTS</div>
+                    <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Height</div>
+                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4 }}>{gameOver.height}</div>
+                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>⏸ Points paused</div>
 
                     <div style={{ display: 'grid', gap: 10, marginBottom: 18, textAlign: 'left' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Height</span><span>{gameOver.height}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                         <span style={{ color: '#777', textTransform: 'uppercase' }}>Best</span><span>{gameOver.best}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Cap</span><span>{maxPerGame}</span>
                       </div>
                     </div>
 
@@ -4514,6 +4406,7 @@ const ZkMinerPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="zk-miner-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
 
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
@@ -4532,12 +4425,8 @@ const ZkMinerPage = ({ onBack }: { onBack: () => void }) => {
                     <div className="text-brand-text-primary text-sm font-bold">{balance.toLocaleString()} PTS</div>
                   </div>
                   <div className="mb-3">
-                    <div className="text-[10px] uppercase text-brand-text-muted">Per Match</div>
-                    <div className="text-brand-text-primary text-sm">3=+0.3 · 4=+0.4 · 5=+0.5</div>
-                  </div>
-                  <div className="mb-3">
-                    <div className="text-[10px] uppercase text-brand-text-muted">Cap / Game</div>
-                    <div className="text-brand-text-primary text-sm">{maxScore.toFixed(0)} PTS</div>
+                    <div className="text-[10px] uppercase text-brand-text-muted">Reward</div>
+                    <div className="text-brand-text-primary text-sm">⏸ Points paused</div>
                   </div>
                   <div className="mb-3">
                     <div className="text-[10px] uppercase text-brand-text-muted">Moves</div>
@@ -4622,18 +4511,12 @@ const ZkMinerPage = ({ onBack }: { onBack: () => void }) => {
                     </div>
 
                     <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Score</div>
-                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4, color: '#5be0a4' }}>{gameOver.scorePts.toFixed(1)}</div>
-                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>POINTS</div>
+                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4 }}>{gameOver.scorePts.toFixed(1)}</div>
+                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>⏸ Points paused</div>
 
                     <div style={{ display: 'grid', gap: 10, marginBottom: 18, textAlign: 'left' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Credited On Chain</span><span>+{gameOver.awarded} PTS</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Best</span><span>{gameOver.bestPts.toFixed(1)} PTS</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Cap</span><span>{maxScore.toFixed(0)} PTS</span>
+                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Best</span><span>{gameOver.bestPts.toFixed(1)}</span>
                       </div>
                     </div>
 
@@ -4803,6 +4686,7 @@ const LitLaunchPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-launch-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
 
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
@@ -4822,11 +4706,7 @@ const LitLaunchPage = ({ onBack }: { onBack: () => void }) => {
                   </div>
                   <div className="mb-3">
                     <div className="text-[10px] uppercase text-brand-text-muted">Reward</div>
-                    <div className="text-brand-text-primary text-sm">+1 PT / coin · {MAX_LIVES} lives</div>
-                  </div>
-                  <div className="mb-3">
-                    <div className="text-[10px] uppercase text-brand-text-muted">Cap / Game</div>
-                    <div className="text-brand-text-primary text-sm">{maxCoins} PTS</div>
+                    <div className="text-brand-text-primary text-sm">⏸ Points paused · {MAX_LIVES} lives</div>
                   </div>
                   <div className="mb-4">
                     <div className="text-[10px] uppercase text-brand-text-muted">Games Today</div>
@@ -4906,14 +4786,11 @@ const LitLaunchPage = ({ onBack }: { onBack: () => void }) => {
                       Session ended
                     </div>
 
-                    <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Banked</div>
-                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4, color: '#5be0a4' }}>+{gameOver.awarded}</div>
-                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>POINTS</div>
+                    <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Coins</div>
+                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4 }}>{gameOver.score}</div>
+                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>⏸ Points paused</div>
 
                     <div style={{ display: 'grid', gap: 10, marginBottom: 18, textAlign: 'left' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Coins</span><span>{gameOver.score}</span>
-                      </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                         <span style={{ color: '#777', textTransform: 'uppercase' }}>Hits</span><span>{gameOver.hits} / {MAX_LIVES}</span>
                       </div>
@@ -5087,6 +4964,7 @@ const BlockChainPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="block-chain-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
 
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
@@ -5106,11 +4984,7 @@ const BlockChainPage = ({ onBack }: { onBack: () => void }) => {
                   </div>
                   <div className="mb-3">
                     <div className="text-[10px] uppercase text-brand-text-muted">Reward</div>
-                    <div className="text-brand-text-primary text-sm">milestone tiles</div>
-                  </div>
-                  <div className="mb-3">
-                    <div className="text-[10px] uppercase text-brand-text-muted">Cap / Game</div>
-                    <div className="text-brand-text-primary text-sm">{maxAward} PTS</div>
+                    <div className="text-brand-text-primary text-sm">⏸ Points paused</div>
                   </div>
                   <div className="mb-4">
                     <div className="text-[10px] uppercase text-brand-text-muted">Games Today</div>
@@ -5122,10 +4996,7 @@ const BlockChainPage = ({ onBack }: { onBack: () => void }) => {
                       <span className="text-brand-text-muted">Best Tile</span>
                       <span className="text-brand-text-primary">{bestTile}</span>
                     </div>
-                    <div className="flex items-center justify-between text-[11px] mt-1">
-                      <span className="text-brand-text-muted">Best Run</span>
-                      <span className="text-brand-text-primary">{bestAwarded} PTS</span>
-                    </div>
+
                   </div>
                 </>
               )}
@@ -5194,19 +5065,13 @@ const BlockChainPage = ({ onBack }: { onBack: () => void }) => {
                       Session ended
                     </div>
 
-                    <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Banked</div>
-                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4, color: '#5be0a4' }}>+{gameOver.awarded}</div>
-                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>POINTS</div>
+                    <div style={{ fontSize: 11, textTransform: 'uppercase', color: '#777', letterSpacing: '0.15em' }}>Highest Tile</div>
+                    <div style={{ fontSize: 40, fontWeight: 700, lineHeight: 1, marginTop: 4 }}>{gameOver.highestTile}</div>
+                    <div style={{ fontSize: 11, color: '#777', marginTop: 4, marginBottom: 18, letterSpacing: '0.1em' }}>⏸ Points paused</div>
 
                     <div style={{ display: 'grid', gap: 10, marginBottom: 18, textAlign: 'left' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Highest Tile</span><span>{gameOver.highestTile}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                         <span style={{ color: '#777', textTransform: 'uppercase' }}>Best Ever</span><span>{gameOver.bestTile}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                        <span style={{ color: '#777', textTransform: 'uppercase' }}>Cap</span><span>{maxAward} PTS</span>
                       </div>
                     </div>
 
@@ -5328,6 +5193,7 @@ const LitDicePage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-dice-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
           <div className="order-2 lg:order-1 space-y-5">
@@ -5457,6 +5323,7 @@ const LitLimboPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-limbo-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
           <div className="order-2 lg:order-1 space-y-5">
@@ -5587,6 +5454,7 @@ const LitMinesPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-mines-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
           <div className="order-2 lg:order-1 space-y-5">
@@ -5685,6 +5553,7 @@ const LitPlinkoPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-plinko-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
           <div className="order-2 lg:order-1 space-y-5">
@@ -5778,6 +5647,7 @@ const LitWheelPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-wheel-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
           <div className="order-2 lg:order-1 space-y-5">
@@ -5871,6 +5741,7 @@ const LitCoinFlipPage = ({ onBack }: { onBack: () => void }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lit-coin-flip-page py-8 max-w-7xl mx-auto px-4">
       <button onClick={onBack} className="font-mono text-[11px] uppercase text-brand-text-muted hover:text-brand-text-primary mb-6">← Back to Games</button>
+      <div className="mb-4 text-[10px] uppercase tracking-wider text-brand-text-muted">⏸ Points paused</div>
       <div className={`grid gap-5 ${playing ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[260px_1fr_300px]'}`}>
         {!playing && (
           <div className="order-2 lg:order-1 space-y-5">
@@ -6325,6 +6196,9 @@ const GamesPage = () => {
             >Provably Fair</button>
           </div>
         </div>
+      </div>
+      <div className="mb-4 px-4 py-3 rounded-xl bg-brand-surface border border-brand-border text-brand-text-primary text-xs">
+        ⏸ Points are paused for all games until the next update — you can still play everything as normal.
       </div>
       <ProvablyFairModal open={pfOpen} onClose={() => setPfOpen(false)} />
       <CasinoWalletModal open={cwOpen} onClose={() => setCwOpen(false)} wallet={lowerAddr} />

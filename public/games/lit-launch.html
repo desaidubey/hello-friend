@@ -256,6 +256,7 @@
       <div class="panel-title" id="panel-title">LIT LAUNCH</div>
       <div class="panel-sub" id="panel-sub">Dodge asteroids · catch coins · 3 lives</div>
       <div id="panel-body"></div>
+<div class="pp-banner" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#ffe97a;text-transform:uppercase;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:8px;padding:5px 8px;margin:8px 0;text-align:center">Points paused</div>
       <div class="panel-btns">
         <button class="panel-btn primary" id="btn-primary">PLAY</button>
         <button class="panel-btn" id="btn-exit">EXIT</button>
@@ -470,9 +471,9 @@
 
     const noGames = left <= 0;
     const body = `
-      <div class="panel-stat-row"><span class="lbl">Reward</span><span class="val">+1 PT / coin</span></div>
+      <div class="panel-stat-row"><span class="lbl">Reward</span><span class="val">Points paused</span></div>
       <div class="panel-stat-row"><span class="lbl">Lives</span><span class="val">${MAX_LIVES}</span></div>
-      <div class="panel-stat-row"><span class="lbl">Cap / Game</span><span class="val">${MAX_COINS} PTS</span></div>
+      <div class="panel-stat-row"><span class="lbl">Cap / Game</span><span class="val">Points paused</span></div>
       <div class="panel-stat-row"><span class="lbl">Games Today</span><span class="val">${5 - left} / 5</span></div>
       <div class="panel-stat-row"><span class="lbl">Best Score</span><span class="val">${best} PTS</span></div>
     `;
@@ -901,7 +902,7 @@
       const left = stats ? Math.max(0, Number(stats.gamesLeft || 0)) : 0;
       ST.gamesLeft = left;
       const body = `
-        <div class="panel-big green">+${awarded} PTS</div>
+        <div class="panel-big green">Points paused</div>
         <div class="panel-stat-row"><span class="lbl">Coins</span><span class="val">${score}</span></div>
         <div class="panel-stat-row"><span class="lbl">Hits</span><span class="val">${hits} / ${MAX_LIVES}</span></div>
         <div class="panel-stat-row"><span class="lbl">Best Score</span><span class="val">${best}</span></div>

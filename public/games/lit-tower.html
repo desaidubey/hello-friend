@@ -311,6 +311,7 @@
       <div class="panel-title" id="panel-title">LIT TOWER</div>
       <div class="panel-sub" id="panel-sub">Free · 5 games / day · +1 PT each correct stack</div>
       <div id="panel-body"></div>
+<div class="pp-banner" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#ffe97a;text-transform:uppercase;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:8px;padding:5px 8px;margin:8px 0;text-align:center">Points paused</div>
       <div class="panel-btns">
         <button class="panel-btn primary" id="btn-primary">PLAY</button>
         <button class="panel-btn" id="btn-exit">EXIT</button>
@@ -516,8 +517,8 @@
 
     const noGames = left <= 0;
     const body = `
-      <div class="panel-stat-row"><span class="lbl">Reward</span><span class="val">+1 PT / stack</span></div>
-      <div class="panel-stat-row"><span class="lbl">Cap / Game</span><span class="val">${cap}</span></div>
+      <div class="panel-stat-row"><span class="lbl">Reward</span><span class="val">Points paused</span></div>
+      <div class="panel-stat-row"><span class="lbl">Cap / Game</span><span class="val">Points paused</span></div>
       <div class="panel-stat-row"><span class="lbl">Games Today</span><span class="val">${5 - left} / 5</span></div>
       <div class="panel-stat-row"><span class="lbl">Best Height</span><span class="val">${best}</span></div>
     `;
@@ -1091,7 +1092,7 @@
     ST.gamesLeft = left;
 
     const body = `
-      <div class="panel-big green">+${awarded} PTS</div>
+      <div class="panel-big green">Points paused</div>
       <div class="panel-stat-row"><span class="lbl">Height</span><span class="val">${height}</span></div>
       <div class="panel-stat-row"><span class="lbl">Best</span><span class="val">${best}</span></div>
       <div class="panel-stat-row"><span class="lbl">Cap</span><span class="val">${ST.maxStacks}</span></div>

@@ -73,6 +73,7 @@
       <div class="panel-title" id="panel-title">LIT PLINKO</div>
       <div class="panel-sub" id="panel-sub">Drop a ball · 13 slots · provably fair</div>
       <div id="panel-body"></div>
+<div class="pp-banner" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#ffe97a;text-transform:uppercase;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:8px;padding:5px 8px;margin:8px 0;text-align:center">Points paused</div>
       <div class="panel-btns">
         <button class="panel-btn primary" id="btn-primary">PLAY · 5 PTS</button>
         <button class="panel-btn" id="btn-exit">EXIT</button>
@@ -480,9 +481,9 @@
     pTitle.textContent = d.profit > 0 ? 'YOU WIN' : (d.profit === 0 ? 'PUSH' : 'LOSE');
     pSub.textContent = `Slot ${d.slot} · ${d.multiplier.toFixed(2)}x`;
     pBody.innerHTML = `
-      <div class="panel-big ${d.profit >= 0 ? 'green' : 'red'}">${d.profit >= 0 ? '+' : ''}${d.profit}</div>
+      <div class="panel-big ${d.profit >= 0 ? 'green' : 'red'}">${d.profit >= 0 ? `Points paused` : d.profit}</div>
       <div class="panel-row"><span class="lbl">Stake</span><span class="val">${d.stake} PTS</span></div>
-      <div class="panel-row"><span class="lbl">Awarded</span><span class="val">+${d.awarded} PTS</span></div>
+      <div class="panel-row"><span class="lbl">Awarded</span><span class="val">Points paused</span></div>
       <div class="panel-row"><span class="lbl">Multiplier</span><span class="val">${d.multiplier.toFixed(2)}x</span></div>
       <div class="panel-row"><span class="lbl">Slot</span><span class="val">${d.slot} / ${SLOTS - 1}</span></div>
       ${d.explorerUrl ? `<div class="panel-row"><span class="lbl">Tx</span><a class="val" style="color:#5be0a4;text-decoration:underline" href="${d.explorerUrl}" target="_blank" rel="noreferrer">${(d.txHash||'').slice(0,10)}…</a></div>` : ''}

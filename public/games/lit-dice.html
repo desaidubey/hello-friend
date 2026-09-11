@@ -107,6 +107,7 @@
       <div class="panel-title" id="panel-title">LIT DICE</div>
       <div class="panel-sub" id="panel-sub">Pick a target · pick a side · roll the dice</div>
       <div id="panel-body"></div>
+<div class="pp-banner" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#ffe97a;text-transform:uppercase;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:8px;padding:5px 8px;margin:8px 0;text-align:center">Points paused</div>
       <div class="panel-btns">
         <button class="panel-btn primary" id="btn-primary">PLAY · 5 PTS</button>
         <button class="panel-btn" id="btn-exit">EXIT</button>
@@ -454,13 +455,13 @@
   function endPanel(d) {
     ST.lastResult = d;
     pTitle.textContent = d.won ? 'YOU WIN' : 'YOU LOSE';
-    pSub.textContent = d.won ? `Banked +${d.awarded} PTS` : `Lost ${d.stake} PTS`;
+    pSub.textContent = d.won ? `Points paused` : `Lost ${d.stake} PTS`;
     pBody.innerHTML = `
-      <div class="panel-big ${d.won ? 'green' : 'red'}">${d.won ? `+${d.awarded}` : `-${d.stake}`}</div>
+      <div class="panel-big ${d.won ? 'green' : 'red'}">${d.won ? `Points paused` : `-${d.stake}`}</div>
       <div class="panel-row"><span class="lbl">Roll</span><span class="val">${d.roll.toFixed(2)}</span></div>
       <div class="panel-row"><span class="lbl">Target</span><span class="val">${d.direction.toUpperCase()} ${d.target}</span></div>
       <div class="panel-row"><span class="lbl">Multiplier</span><span class="val">${d.multiplier.toFixed(2)}x</span></div>
-      <div class="panel-row"><span class="lbl">Profit</span><span class="val" style="color:${d.profit >= 0 ? '#5be0a4' : '#ff8a8a'}">${d.profit >= 0 ? '+' : ''}${d.profit} PTS</span></div>
+      <div class="panel-row"><span class="lbl">Profit</span><span class="val">Points paused</span></div>
       ${d.explorerUrl ? `<div class="panel-row"><span class="lbl">Tx</span><a class="val" style="color:#5be0a4;text-decoration:underline" href="${d.explorerUrl}" target="_blank" rel="noreferrer">${(d.txHash||'').slice(0,10)}…</a></div>` : ''}
       <button class="panel-btn verify" style="width:100%;margin-top:14px" id="btn-verify-end">VERIFY FAIRNESS</button>
     `;
