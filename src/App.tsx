@@ -2738,7 +2738,6 @@ contract LitVMTokenFactory is Ownable {
   );
 };
 // --- Page: Quests ---
-const SOCIAL_API = 'https://game.test-hub.xyz';
 
 
 const QuestsPage = () => {
