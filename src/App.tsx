@@ -3158,12 +3158,6 @@ const QuestsPage = () => {
           <div className="min-w-0">
             <h3 className={cn("font-semibold truncate", isDone ? "text-white/40" : "text-white")}>{t.title}</h3>
             <div className="flex items-center gap-2 mt-1">
-              <span className={cn(
-                "text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border",
-                isDone ? "border-white/5 text-white/30" : "border-white/15 text-white bg-white/5"
-              )}>
-                +{t.points} PTS
-              </span>
               <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">{groupTitle}</span>
             </div>
           </div>
@@ -3213,9 +3207,6 @@ const QuestsPage = () => {
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-white truncate">{t.title}</h3>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/15 text-white bg-white/5">
-                +{t.points || 50} PTS
-              </span>
               <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">Quote Tweets</span>
             </div>
           </div>
@@ -3278,13 +3269,9 @@ const QuestsPage = () => {
             <h1 className="text-xs font-bold uppercase tracking-[0.3em] text-white">Socials & Quests</h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1 h-1 rounded-full bg-white/40 animate-pulse" />
-              <span className="text-[10px] text-brand-text-muted font-medium uppercase tracking-widest">Earn Points</span>
+              <span className="text-[10px] text-brand-text-muted font-medium uppercase tracking-widest">Snapshot Taken</span>
             </div>
           </div>
-        </div>
-        <div className="text-right">
-          <div className="text-[9px] uppercase tracking-widest text-brand-text-muted">Available</div>
-          <div className="font-mono text-white text-xl font-bold">{totalEarned}<span className="text-brand-text-muted text-xs"> / {totalPossible} PTS</span></div>
         </div>
       </div>
 
@@ -3314,29 +3301,11 @@ const QuestsPage = () => {
                 className="shrink-0"
               />
               <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-white truncate">Bet 100 Times on BetsOnBlock</h3>
-                <p className="text-xs text-brand-text-muted mt-1">Place 100 bets on BetsOnBlock</p>
+                <h3 className="font-semibold text-white truncate">BetsOnBlock</h3>
+                <p className="text-xs text-brand-text-muted mt-1">Partner betting platform on LitDEX</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border border-orange-500/40 text-orange-400 bg-orange-500/10">
-                    +4000 PTS
-                  </span>
                   <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">Partner</span>
                 </div>
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] uppercase tracking-widest text-brand-text-muted font-bold">Progress</span>
-                <span className="font-mono text-xs text-white font-bold">
-                  {bobCount === null ? '—' : Math.min(bobCount, 100)} / 100
-                </span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden">
-                <div
-                  className="h-full bg-orange-500 transition-all"
-                  style={{ width: `${Math.min(100, ((bobCount ?? 0) / 100) * 100)}%` }}
-                />
               </div>
             </div>
 
