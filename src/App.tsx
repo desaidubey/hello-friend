@@ -667,11 +667,6 @@ const CheckinPage = () => {
             title: "Daily Check-in",
             message: `Day ${Number(newInfo.streak)} streak! Earned ${ldexVal} LDEX`,
           });
-          addNotif(address, {
-            type: "points",
-            title: "Points Earned",
-            message: `+10 points earned from daily check-in`,
-          });
         }
       } catch { /* ignore */ }
       
@@ -1516,12 +1511,8 @@ const ERC20Form = ({ onDeployed }: any) => {
 
             <div className="text-center space-y-2">
               <p className="text-[10px] font-bold text-brand-text-muted uppercase tracking-widest">Free deployment</p>
-              <div className="flex items-center justify-center gap-2 text-white/50">
-                <Sparkles size={12} />
-                <span className="text-[9px] font-bold uppercase tracking-widest">+5 points earned automatically ({deployDaily}/100 today)</span>
-              </div>
               <p className="text-[9px] text-brand-text-muted italic opacity-60">
-                Deploys via LitDEXDeployer • points credited automatically by relayer.
+                Deploys via LitDEXDeployer on LitVM.
               </p>
             </div>
 
@@ -7438,9 +7429,9 @@ const MessengerPage = () => {
 
       try {
         if (address) addNotif(address, {
-          type: "points",
+          type: "message",
           title: "Message Sent",
-          message: "+2 points earned from on-chain message",
+          message: "Your message was delivered on-chain",
         });
       } catch { /* ignore */ }
 
