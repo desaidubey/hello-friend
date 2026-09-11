@@ -7429,7 +7429,7 @@ const MessengerPage = () => {
 
       try {
         if (address) addNotif(address, {
-          type: "message",
+          type: "milestone",
           title: "Message Sent",
           message: "Your message was delivered on-chain",
         });
