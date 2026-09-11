@@ -6198,7 +6198,7 @@ const GamesPage = () => {
         </div>
       </div>
       <div className="mb-4 px-4 py-3 rounded-xl bg-brand-surface border border-brand-border text-brand-text-primary text-xs">
-        ⏸ Points are paused for all games until the next update — you can still play everything as normal.
+        ⏸ Points are paused for all games until the next update. You can still play everything as normal.
       </div>
       <ProvablyFairModal open={pfOpen} onClose={() => setPfOpen(false)} />
       <CasinoWalletModal open={cwOpen} onClose={() => setCwOpen(false)} wallet={lowerAddr} />
