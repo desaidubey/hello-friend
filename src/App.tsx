@@ -650,7 +650,6 @@ const CheckinPage = () => {
       });
 
       const rows: { label: string; value: string }[] = [
-        { label: "BASE POINTS", value: "+10 PTS" },
         { label: "INCENTIVE YIELD", value: `+${Number(ldexVal).toLocaleString()} LDEX` },
       ];
       rows.push({ label: "STREAK", value: `Day ${Number(newInfo.streak)}` });
@@ -1314,7 +1313,6 @@ const ERC20Form = ({ onDeployed }: any) => {
             title: "DAILY CAP REACHED",
             subtitle: "MAX 20 TOKEN DEPLOYS PER DAY",
             rows: [
-              { label: "BASE POINTS", value: "+0 PTS" },
               { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
               { label: "STATUS", value: "LIVE ON LITVM" },
             ],
@@ -1324,7 +1322,6 @@ const ERC20Form = ({ onDeployed }: any) => {
             title: "TOKEN DEPLOYED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
-              { label: "BASE POINTS", value: "+5 PTS" },
               { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
               { label: "STATUS", value: "LIVE ON LITVM" },
             ],
@@ -1738,7 +1735,6 @@ contract MNFT is ERC721, Ownable {
       const ca = (result as any).tokenAddress as string | undefined;
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${result.txHash}`;
       awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 NFT-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       const shortHash = `${result.txHash.slice(0, 6)}...${result.txHash.slice(-4)}`;
       try {
@@ -1752,7 +1748,6 @@ contract MNFT is ERC721, Ownable {
         title: "NFT CONTRACT DEPLOYED",
         subtitle: "PROTOCOL VERIFICATION COMPLETE",
         rows: [
-          { label: "BASE POINTS", value: "+5 PTS" },
           { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "LIVE ON LITVM" },
@@ -2231,7 +2226,6 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
       awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 STAKING-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       {
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
@@ -2241,7 +2235,6 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
           title: "STAKING CONTRACT DEPLOYED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
-            { label: "BASE POINTS", value: "+5 PTS" },
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
@@ -2503,7 +2496,6 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
       awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 VESTING-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       {
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
@@ -2513,7 +2505,6 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
           title: "VESTING CONTRACT DEPLOYED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
-            { label: "BASE POINTS", value: "+5 PTS" },
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
@@ -2802,7 +2793,6 @@ contract LitVMTokenFactory is Ownable {
       });
       setTxInfo({ hash: res.txHash, address: res.tokenAddress });
       awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } }).then((r) => {
-        if (r?.capped) showSuccess({ title: "DAILY CAP REACHED", subtitle: "MAX 100 FACTORY-DEPLOY POINTS/DAY", rows: [{ label: "POINTS", value: "+0 PTS (CAP REACHED)" }, { label: "RESETS", value: "00:00 IST" }] });
       });
       {
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
@@ -2812,7 +2802,6 @@ contract LitVMTokenFactory is Ownable {
           title: "TOKEN FACTORY DEPLOYED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
-            { label: "BASE POINTS", value: "+5 PTS" },
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
@@ -3014,7 +3003,7 @@ const QuestsPage = () => {
       const d = await r.json().catch(() => ({}));
       if (r.ok && d?.success !== false) {
         setBobClaimed(true);
-        showInfo('+4000 PTS earned!');
+        showInfo('Claim recorded');
       } else {
         const msg = String(d?.error || d?.message || '').toLowerCase();
         if (msg.includes('already')) setBobClaimed(true);
@@ -3066,7 +3055,7 @@ const QuestsPage = () => {
       const d = await r.json().catch(() => ({}));
       if (r.ok && d?.success !== false) {
         setTasks(prev => prev.map(t => t.id === task.id ? { ...t, claimed: true } : t));
-        showInfo(`+${task.points} PTS earned!`);
+        showInfo('Task claimed');
       } else {
         const msg = String(d?.error || d?.message || '').toLowerCase();
         if (msg.includes('already')) {
@@ -3234,7 +3223,7 @@ const QuestsPage = () => {
 
         {status === 'approved' ? (
           <div className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-green-500/30 text-green-400 bg-green-500/10 inline-block w-fit">
-            ✅ Approved +50 PTS
+            ✅ Approved
           </div>
         ) : status === 'pending' ? (
           <div className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/15 text-white bg-white/5 inline-block w-fit">
