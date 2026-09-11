@@ -1,7 +1,4 @@
-# Roadmap — NFT video showcase
+# Task Roadmap
 
-- [x] Remove all previous NFT-page content
-- [x] Add the supplied showcase video in a browser-compatible format
-- [x] Add matching Mint your NFT and Trade your NFT action panels
-- [x] Verify the video, links, and responsive layout
-- [x] Confirm the preview build is error-free
+1. Replace NFT showcase video with GitHub boardpass desktopview video (in progress)
+2. Remove em dash from games page pause message
