@@ -8064,7 +8064,7 @@ export default function App() {
       { id: 'checkin', icon: CalendarCheck, title: 'Check In', desc: 'Daily streak rewards' },
       { id: 'nfts', icon: Sparkles, title: 'NFTs', desc: 'Exclusive LiteForge assets' },
       { id: 'messenger', icon: MessageSquare, title: 'Messenger', desc: 'On-chain communication' },
-      { id: 'quests', icon: ListChecks, title: 'Social Quests', desc: 'Complete tasks to earn' },
+      { id: 'quests', icon: ListChecks, title: 'Quest', desc: 'Quests and challenges' },
       
     ]
   };
