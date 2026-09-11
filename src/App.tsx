@@ -2737,7 +2737,7 @@ contract LitVMTokenFactory is Ownable {
     </div>
   );
 };
-// --- Page: Quests / Socials ---
+// --- Page: Quests ---
 const SOCIAL_API = 'https://game.test-hub.xyz';
 
 type SocialTask = {
