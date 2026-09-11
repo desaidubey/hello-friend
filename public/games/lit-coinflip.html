@@ -106,6 +106,7 @@
       <div class="panel-title" id="panel-title">LIT COIN FLIP</div>
       <div class="panel-sub" id="panel-sub">Pick side · pick streak · 1.96x per flip</div>
       <div id="panel-body"></div>
+<div class="pp-banner" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#ffe97a;text-transform:uppercase;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:8px;padding:5px 8px;margin:8px 0;text-align:center">Points paused</div>
       <div class="panel-btns">
         <button class="panel-btn primary" id="btn-primary">PLAY · 5 PTS</button>
         <button class="panel-btn" id="btn-exit">EXIT</button>
@@ -362,10 +363,10 @@
     pTitle.textContent = d.won ? 'STREAK WIN' : 'STREAK BROKE';
     pSub.textContent = `${d.side.toUpperCase()} ×${d.streak}`;
     pBody.innerHTML = `
-      <div class="panel-big ${d.won ? 'green' : 'red'}">${d.won ? `+${d.awarded - d.stake}` : `-${d.stake}`}</div>
+      <div class="panel-big ${d.won ? 'green' : 'red'}">${d.won ? `Points paused` : `-${d.stake}`}</div>
       <div class="panel-row"><span class="lbl">Stake</span><span class="val">${d.stake} PTS</span></div>
       <div class="panel-row"><span class="lbl">Multiplier</span><span class="val">${d.multiplier.toFixed(2)}x</span></div>
-      <div class="panel-row"><span class="lbl">Awarded</span><span class="val">+${d.awarded} PTS</span></div>
+      <div class="panel-row"><span class="lbl">Awarded</span><span class="val">Points paused</span></div>
       <div class="panel-row"><span class="lbl">Flips</span><span class="val">${d.flips.map(f => f === 'heads' ? 'L' : 'D').join(' · ')}</span></div>
       ${d.explorerUrl ? `<div class="panel-row"><span class="lbl">Tx</span><a class="val" style="color:#5be0a4;text-decoration:underline" href="${d.explorerUrl}" target="_blank" rel="noreferrer">${(d.txHash||'').slice(0,10)}…</a></div>` : ''}
       <button class="panel-btn verify" style="width:100%;margin-top:14px" id="btn-verify-end">VERIFY FAIRNESS</button>

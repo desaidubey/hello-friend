@@ -334,6 +334,7 @@
       <div class="panel-title" id="panel-title">ZK MINER</div>
       <div class="panel-sub" id="panel-sub">Match 3+ to charge the rig · 30 moves · 5 games / day</div>
       <div id="panel-body"></div>
+<div class="pp-banner" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#ffe97a;text-transform:uppercase;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:8px;padding:5px 8px;margin:8px 0;text-align:center">Points paused</div>
       <div class="panel-btns">
         <button class="panel-btn primary" id="btn-primary">PLAY</button>
         <button class="panel-btn" id="btn-exit">EXIT</button>
@@ -1363,7 +1364,7 @@
 
     const body = `
       <div class="panel-big">${scorePts.toFixed(1)} PTS</div>
-      <div class="panel-stat-row"><span class="lbl">Credited</span><span class="val">+${awarded} PTS on chain</span></div>
+      <div class="panel-stat-row"><span class="lbl">Credited</span><span class="val">Points paused</span></div>
       <div class="panel-stat-row"><span class="lbl">Best</span><span class="val">${bestPts.toFixed(1)} PTS</span></div>
       <div class="panel-stat-row"><span class="lbl">Moves Used</span><span class="val">${MOVES_PER_GAME - ST.movesLeft} / ${MOVES_PER_GAME}</span></div>
     `;

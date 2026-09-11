@@ -730,7 +730,8 @@
       Cash out anytime. Wrong guess = lose pot.
     </div>
 
-    <button class="start-btn" id="start-btn">PLAY · 10 PTS</button>
+<div class="pp-banner" style="font-family:'Fredoka One',cursive;font-size:11px;letter-spacing:1px;color:#ffe97a;background:rgba(255,214,102,0.12);border:1px solid rgba(255,214,102,0.35);border-radius:10px;padding:6px 10px;margin-bottom:14px;text-align:center">Points paused</div>
+        <button class="start-btn" id="start-btn">PLAY · 10 PTS</button>
     <div class="err-msg" id="start-error"></div>
     <div id="nft-hint" style="display:none;font-family:'Fredoka One',cursive;color:rgba(255,255,255,0.4);margin-top:14px;font-size:12px;text-align:center;max-width:340px;letter-spacing:1px;">Hold an NFT for bigger increments &amp; more time per round</div>
   </div>
@@ -758,7 +759,7 @@
 
       <div class="go-pot-label">FINAL POT</div>
       <div class="go-pot-val" id="go-final-pot">0</div>
-      <div class="go-profit" id="go-profit">+0</div>
+      <div class="go-profit" id="go-profit">Points paused</div>
 
       <div class="go-stats">
         <div class="go-stat">
@@ -1356,7 +1357,7 @@
     el('go-best-streak').textContent = bestStreak;
 
     const profitEl = el('go-profit');
-    profitEl.textContent = (profit >= 0 ? '+' : '') + profit + ' PTS';
+    profitEl.textContent = 'Points paused';
     profitEl.style.color = profit >= 0 ? '#3ecf8e' : '#ef4956';
 
     const errBox = el('go-error');
