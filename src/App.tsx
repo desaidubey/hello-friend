@@ -48,7 +48,9 @@ import BridgeCard from './components/ui/bridge-card';
 import { AnimatedNavFramer } from './components/ui/navigation-menu';
 import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
 import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from './lib/feedback';
-import nftShowcaseVideo from './assets/boardpass-desktopview.mp4.asset.json';
+
+const NFT_SHOWCASE_VIDEO_MP4 = '/media/boardpass-desktopview.mp4';
+const NFT_SHOWCASE_VIDEO_WEBM = '/media/boardpass-desktopview.webm';
 
 // --- Types ---
 type PageID = 'swap' | 'pool' | 'deploy' | 'points' | 'checkin' | 'nfts' | 'messenger' | 'quests' | 'games' | 'faucet' | 'hub' | 'chatui';
@@ -709,7 +711,6 @@ const NFTsPage = () => {
       <div className="mx-auto w-full max-w-[1760px]">
         <video
           className="nft-showcase-video w-full"
-          src={nftShowcaseVideo.url}
           autoPlay
           loop
           muted
@@ -718,7 +719,10 @@ const NFTsPage = () => {
           controlsList="nodownload noplaybackrate noremoteplayback"
           onContextMenu={(event) => event.preventDefault()}
           aria-label="LitDEX NFT collection showcase"
-        />
+        >
+          <source src={NFT_SHOWCASE_VIDEO_WEBM} type="video/webm" />
+          <source src={NFT_SHOWCASE_VIDEO_MP4} type="video/mp4" />
+        </video>
 
         <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-2 md:gap-8">
           {actions.map((action) => (
