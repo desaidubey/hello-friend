@@ -3539,7 +3539,7 @@ const MathSlashPage = ({ onBack }: { onBack: () => void }) => {
           {!playing ? (
             <div className="p-6 sm:p-8 text-center">
               <div className="font-mono text-brand-text-primary text-base sm:text-lg mb-2">MATH SLASH</div>
-              <div className="font-mono text-brand-text-muted text-xs mb-2">Slash the equations. zkLTC auto-sent after each game.</div>
+              <div className="font-mono text-brand-text-muted text-xs mb-2">Slash the equations. Points paused.</div>
               <div className="font-mono text-[10px] text-brand-text-muted mb-6">{DAILY_LIMIT} games/day · resets 00:00 IST</div>
               <button
                 type="button"
@@ -3745,14 +3745,14 @@ const PumpDumpPage = ({ onBack }: { onBack: () => void }) => {
             addNotif(lowerAddr, {
               type: 'game',
               title: 'Pump or Dump · Cashed Out',
-              message: `Pot ${pot} PTS · profit +${profit}`,
+              message: `Pot ${pot} PTS · Points paused`,
               link: d?.txInfo?.explorerUrl || (d?.txInfo?.txHash ? `https://liteforge.explorer.caldera.xyz/tx/${d.txInfo.txHash}` : undefined),
             });
           } else if (d.reason === 'wrong') {
             addNotif(lowerAddr, {
               type: 'game',
               title: 'Pump or Dump · Wrong Call',
-              message: `Streak ${d.streak} · -${ENTRY_COST} PTS`,
+              message: `Streak ${d.streak} · Points paused`,
             });
           }
         } catch {}
@@ -3884,7 +3884,7 @@ const PumpDumpPage = ({ onBack }: { onBack: () => void }) => {
           {!playing ? (
             <div className="p-6 sm:p-8 text-center">
               <div className="font-mono text-brand-text-primary text-base sm:text-lg mb-2">PUMP OR DUMP</div>
-              <div className="font-mono text-brand-text-muted text-xs mb-2">Predict next candle. Pot grows on each correct. Cash out anytime.</div>
+              <div className="font-mono text-brand-text-muted text-xs mb-2">Predict the next candle. Points paused.</div>
               <div className="font-mono text-[10px] text-brand-text-muted mb-6">{ENTRY_COST} PTS entry · {DAILY_LIMIT} games/day · resets 00:00 IST</div>
               <button
                 type="button"
@@ -4063,7 +4063,7 @@ const LitTowerPage = ({ onBack }: { onBack: () => void }) => {
             addNotif(lowerAddr, {
               type: 'game',
               title: 'Lit Tower · Stack Banked',
-              message: `Height ${d.height} · +${awarded} PTS`,
+              message: `Height ${d.height} · Points paused`,
             });
           }
         } catch {}
@@ -4175,7 +4175,7 @@ const LitTowerPage = ({ onBack }: { onBack: () => void }) => {
           {!playing ? (
             <div className="p-6 sm:p-8 text-center">
               <div className="font-mono text-brand-text-primary text-base sm:text-lg mb-2">LIT TOWER</div>
-              <div className="font-mono text-brand-text-muted text-xs mb-2">Tap to stack moving blocks. Each correct stack mints +1 PT.</div>
+              <div className="font-mono text-brand-text-muted text-xs mb-2">Tap to stack moving blocks. Points paused.</div>
               <div className="font-mono text-[10px] text-brand-text-muted mb-6">Free · {DAILY_LIMIT} games/day · cap {maxPerGame} stacks · resets 00:00 IST</div>
               <button
                 type="button"
@@ -4340,7 +4340,7 @@ const ZkMinerPage = ({ onBack }: { onBack: () => void }) => {
             addNotif(lowerAddr, {
               type: 'game',
               title: 'ZK Miner · Run Banked',
-              message: `Score ${scorePts.toFixed(1)} · +${awarded} PTS`,
+              message: `Score ${scorePts.toFixed(1)} · Points paused`,
             });
           }
         } catch {}
@@ -4453,8 +4453,8 @@ const ZkMinerPage = ({ onBack }: { onBack: () => void }) => {
           {!playing ? (
             <div className="p-6 sm:p-8 text-center">
               <div className="font-mono text-brand-text-primary text-base sm:text-lg mb-2">ZK MINER</div>
-              <div className="font-mono text-brand-text-muted text-xs mb-2">Match 3+ token gems to score points. 3-match = +0.3 PT, 4-match = +0.4, cascades stack.</div>
-              <div className="font-mono text-[10px] text-brand-text-muted mb-6">Free · {DAILY_LIMIT} games/day · {movesGame} moves · cap {maxScore.toFixed(0)} PTS · resets 00:00 IST</div>
+              <div className="font-mono text-brand-text-muted text-xs mb-2">Match 3+ token gems. Points paused.</div>
+              <div className="font-mono text-[10px] text-brand-text-muted mb-6">Free · {DAILY_LIMIT} games/day · {movesGame} moves · cap Points paused · resets 00:00 IST</div>
               <button
                 type="button"
                 onClick={startGame}
@@ -4620,7 +4620,7 @@ const LitLaunchPage = ({ onBack }: { onBack: () => void }) => {
             addNotif(lowerAddr, {
               type: 'game',
               title: 'Lit Launch · Run Banked',
-              message: `${d.score} coins · +${awarded} PTS`,
+              message: `${d.score} coins · Points paused`,
               link: d?.txInfo?.explorerUrl,
             });
           }
@@ -4729,7 +4729,7 @@ const LitLaunchPage = ({ onBack }: { onBack: () => void }) => {
           {!playing ? (
             <div className="p-6 sm:p-8 text-center">
               <div className="font-mono text-brand-text-primary text-base sm:text-lg mb-2">LIT LAUNCH</div>
-              <div className="font-mono text-brand-text-muted text-xs mb-2">Drag left/right · dodge asteroids · catch coins. 3 lives, +1 PT per coin.</div>
+              <div className="font-mono text-brand-text-muted text-xs mb-2">Drag left/right · dodge asteroids · catch coins. 3 lives, points paused.</div>
               <div className="font-mono text-[10px] text-brand-text-muted mb-6">Free · {DAILY_LIMIT} games/day · cap {maxCoins} coins · resets 00:00 IST</div>
               <button
                 type="button"
@@ -4897,7 +4897,7 @@ const BlockChainPage = ({ onBack }: { onBack: () => void }) => {
             addNotif(lowerAddr, {
               type: 'game',
               title: Number(d.highestTile) >= 2048 ? 'Block Chain · 2048 JACKPOT' : 'Block Chain · Run Banked',
-              message: `Highest ${d.highestTile} · +${awarded} PTS`,
+              message: `Highest ${d.highestTile} · Points paused`,
               link: d?.txInfo?.explorerUrl,
             });
           }
@@ -5008,8 +5008,8 @@ const BlockChainPage = ({ onBack }: { onBack: () => void }) => {
           {!playing ? (
             <div className="p-6 sm:p-8 text-center">
               <div className="font-mono text-brand-text-primary text-base sm:text-lg mb-2">BLOCK CHAIN</div>
-              <div className="font-mono text-brand-text-muted text-xs mb-2">Swipe to merge tiles. Each new milestone tile (64 → 2048) mints PTS.</div>
-              <div className="font-mono text-[10px] text-brand-text-muted mb-6">Free · {DAILY_LIMIT} games/day · cap {maxAward} PTS · 2048 = jackpot · resets 00:00 IST</div>
+              <div className="font-mono text-brand-text-muted text-xs mb-2">Swipe to merge tiles. Points paused.</div>
+              <div className="font-mono text-[10px] text-brand-text-muted mb-6">Free · {DAILY_LIMIT} games/day · cap Points paused · 2048 = jackpot · resets 00:00 IST</div>
               <button
                 type="button"
                 onClick={startGame}
@@ -5152,7 +5152,7 @@ const LitDicePage = ({ onBack }: { onBack: () => void }) => {
           addNotif(lowerAddr, {
             type: 'game',
             title: d.won ? 'Lit Dice · Won' : 'Lit Dice · Lost',
-            message: `${Number(d.multiplier || 0).toFixed(2)}x · ${d.profit >= 0 ? '+' : ''}${d.profit} PTS`,
+            message: `${Number(d.multiplier || 0).toFixed(2)}x · Points paused`,
             link: d?.txInfo?.explorerUrl,
           });
         } catch {}
@@ -5413,7 +5413,7 @@ const LitMinesPage = ({ onBack }: { onBack: () => void }) => {
           addNotif(lowerAddr, {
             type: 'game',
             title: d.won ? 'Lit Mines · Cashed Out' : 'Lit Mines · Boom',
-            message: `${Number(d.multiplier || 0).toFixed(2)}x · ${d.profit >= 0 ? '+' : ''}${d.profit} PTS`,
+            message: `${Number(d.multiplier || 0).toFixed(2)}x · Points paused`,
             link: d?.txInfo?.explorerUrl,
           });
         } catch {}
@@ -5528,7 +5528,7 @@ const LitPlinkoPage = ({ onBack }: { onBack: () => void }) => {
       if (!d || typeof d !== 'object') return;
       if (d.type === 'litdex:litplinko:exit') { setPlaying(false); try { if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {}); } catch {} try { (screen.orientation as any)?.unlock?.(); } catch {} fetchStats(); return; }
       if (d.type === 'litdex:litplinko:end') {
-        try { addNotif(lowerAddr, { type: 'game', title: d.won ? 'Lit Plinko · Win' : 'Lit Plinko · Loss', message: `${Number(d.multiplier || 0).toFixed(2)}x · ${d.profit >= 0 ? '+' : ''}${d.profit} PTS`, link: d?.txInfo?.explorerUrl }); } catch {}
+        try { addNotif(lowerAddr, { type: 'game', title: d.won ? 'Lit Plinko · Win' : 'Lit Plinko · Loss', message: `${Number(d.multiplier || 0).toFixed(2)}x · Points paused`, link: d?.txInfo?.explorerUrl }); } catch {}
         saveFairness({ game: 'plinko', seedHash: d.seedHash, serverSeed: d.serverSeed, clientSeed: d.clientSeed, risk: d.risk });
         fetchStats();
       }
@@ -5622,7 +5622,7 @@ const LitWheelPage = ({ onBack }: { onBack: () => void }) => {
       if (!d || typeof d !== 'object') return;
       if (d.type === 'litdex:litwheel:exit') { setPlaying(false); try { if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {}); } catch {} try { (screen.orientation as any)?.unlock?.(); } catch {} fetchStats(); return; }
       if (d.type === 'litdex:litwheel:end') {
-        try { addNotif(lowerAddr, { type: 'game', title: d.won ? 'Lit Wheel · Win' : 'Lit Wheel · Loss', message: `${Number(d.multiplier || 0).toFixed(2)}x · ${d.profit >= 0 ? '+' : ''}${d.profit} PTS`, link: d?.txInfo?.explorerUrl }); } catch {}
+        try { addNotif(lowerAddr, { type: 'game', title: d.won ? 'Lit Wheel · Win' : 'Lit Wheel · Loss', message: `${Number(d.multiplier || 0).toFixed(2)}x · Points paused`, link: d?.txInfo?.explorerUrl }); } catch {}
         saveFairness({ game: 'wheel', seedHash: d.seedHash, serverSeed: d.serverSeed, clientSeed: d.clientSeed, risk: d.risk });
         fetchStats();
       }
@@ -5716,7 +5716,7 @@ const LitCoinFlipPage = ({ onBack }: { onBack: () => void }) => {
       if (!d || typeof d !== 'object') return;
       if (d.type === 'litdex:litcoinflip:exit') { setPlaying(false); try { if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {}); } catch {} try { (screen.orientation as any)?.unlock?.(); } catch {} fetchStats(); return; }
       if (d.type === 'litdex:litcoinflip:end') {
-        try { addNotif(lowerAddr, { type: 'game', title: d.won ? `Lit Coin Flip · Streak ×${d.streak}` : 'Lit Coin Flip · Loss', message: `${Number(d.multiplier || 0).toFixed(2)}x · ${d.profit >= 0 ? '+' : ''}${d.profit} PTS`, link: d?.txInfo?.explorerUrl }); } catch {}
+        try { addNotif(lowerAddr, { type: 'game', title: d.won ? `Lit Coin Flip · Streak ×${d.streak}` : 'Lit Coin Flip · Loss', message: `${Number(d.multiplier || 0).toFixed(2)}x · Points paused`, link: d?.txInfo?.explorerUrl }); } catch {}
         saveFairness({ game: 'coinflip', seedHash: d.seedHash, serverSeed: d.serverSeed, clientSeed: d.clientSeed, side: d.side, streak: d.streak });
         fetchStats();
       }
@@ -6361,7 +6361,7 @@ const GamesPage = () => {
             </div>
             <div className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-xl text-white mb-2">MATH SLASH</h3>
-              <p className="text-sm text-[#888] mb-6 leading-relaxed">Slash the equations. Earn points, convert to zkLTC.</p>
+              <p className="text-sm text-[#888] mb-6 leading-relaxed">Slash the equations. Points paused.</p>
               <button onClick={() => setSub('math-slash')} className="mt-auto w-full py-3 rounded-lg bg-white text-black font-mono font-bold text-xs uppercase tracking-widest">
                 Play Now
               </button>
@@ -6389,7 +6389,7 @@ const GamesPage = () => {
             </div>
             <div className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-xl text-white mb-2">PUMP OR DUMP</h3>
-              <p className="text-sm text-[#888] mb-6 leading-relaxed">Predict next candle. Pot grows on streak. Cash out anytime.</p>
+              <p className="text-sm text-[#888] mb-6 leading-relaxed">Predict the next candle. Points paused.</p>
               <button onClick={() => setSub('pump-dump')} className="mt-auto w-full py-3 rounded-lg bg-white text-black font-mono font-bold text-xs uppercase tracking-widest">
                 Play Now
               </button>
@@ -6410,7 +6410,7 @@ const GamesPage = () => {
             </div>
             <div className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-xl text-white mb-2">LIT TOWER</h3>
-              <p className="text-sm text-[#888] mb-6 leading-relaxed">Tap to stack moving blocks. +1 PT each correct stack, no entry cost.</p>
+              <p className="text-sm text-[#888] mb-6 leading-relaxed">Tap to stack moving blocks. Points paused, no entry cost.</p>
               <button onClick={() => setSub('lit-tower')} className="mt-auto w-full py-3 rounded-lg bg-white text-black font-mono font-bold text-xs uppercase tracking-widest">
                 Play Now
               </button>
@@ -6451,7 +6451,7 @@ const GamesPage = () => {
             </div>
             <div className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-xl text-white mb-2">ZK MINER</h3>
-              <p className="text-sm text-[#888] mb-6 leading-relaxed">Match 3+ token gems to charge the rig. +1 PT per full charge.</p>
+              <p className="text-sm text-[#888] mb-6 leading-relaxed">Match 3+ token gems to charge the rig. Points paused.</p>
               <button onClick={() => setSub('zk-miner')} className="mt-auto w-full py-3 rounded-lg bg-white text-black font-mono font-bold text-xs uppercase tracking-widest">
                 Play Now
               </button>
@@ -6496,7 +6496,7 @@ const GamesPage = () => {
             </div>
             <div className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-xl text-white mb-2">LIT LAUNCH</h3>
-              <p className="text-sm text-[#888] mb-6 leading-relaxed">Drag left/right · dodge asteroids · catch coins. 3 lives, +1 PT per coin.</p>
+              <p className="text-sm text-[#888] mb-6 leading-relaxed">Drag left/right · dodge asteroids · catch coins. 3 lives, points paused.</p>
               <button onClick={() => setSub('lit-launch')} className="mt-auto w-full py-3 rounded-lg bg-white text-black font-mono font-bold text-xs uppercase tracking-widest">
                 Play Now
               </button>
@@ -6536,7 +6536,7 @@ const GamesPage = () => {
             </div>
             <div className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-xl text-white mb-2">BLOCK CHAIN</h3>
-              <p className="text-sm text-[#888] mb-6 leading-relaxed">2048 with token tiles. Hit 64/128/256/512/1024/2048 milestones for +5 → +160 PTS.</p>
+              <p className="text-sm text-[#888] mb-6 leading-relaxed">2048 with token tiles. Points paused.</p>
               <button onClick={() => setSub('block-chain')} className="mt-auto w-full py-3 rounded-lg bg-white text-black font-mono font-bold text-xs uppercase tracking-widest">
                 Play Now
               </button>
