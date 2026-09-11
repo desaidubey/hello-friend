@@ -48,9 +48,8 @@ import BridgeCard from './components/ui/bridge-card';
 import { AnimatedNavFramer } from './components/ui/navigation-menu';
 import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
 import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from './lib/feedback';
-import nftShowcaseVideo from './assets/boardpass-desktopview.mp4.asset.json';
 
-const NFT_SHOWCASE_VIDEO_URL = `https://id-preview--73b2076a-6ede-4c09-901a-97ef3097d19a.lovable.app${nftShowcaseVideo.url}`;
+const NFT_SHOWCASE_VIDEO_URL = '/media/boardpass-desktopview.mp4';
 
 // --- Types ---
 type PageID = 'swap' | 'pool' | 'deploy' | 'points' | 'checkin' | 'nfts' | 'messenger' | 'quests' | 'games' | 'faucet' | 'hub' | 'chatui';
