@@ -50,6 +50,8 @@ import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployT
 import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from './lib/feedback';
 import nftShowcaseVideo from './assets/boardpass-desktopview.mp4.asset.json';
 
+const NFT_SHOWCASE_VIDEO_URL = `https://id-preview--73b2076a-6ede-4c09-901a-97ef3097d19a.lovable.app${nftShowcaseVideo.url}`;
+
 // --- Types ---
 type PageID = 'swap' | 'pool' | 'deploy' | 'points' | 'checkin' | 'nfts' | 'messenger' | 'quests' | 'games' | 'faucet' | 'hub' | 'chatui';
 import HubPage from './components/HubPage';
@@ -709,7 +711,7 @@ const NFTsPage = () => {
       <div className="mx-auto w-full max-w-[1760px]">
         <video
           className="nft-showcase-video w-full"
-          src={nftShowcaseVideo.url}
+          src={NFT_SHOWCASE_VIDEO_URL}
           autoPlay
           loop
           muted
