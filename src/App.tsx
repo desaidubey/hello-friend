@@ -48,7 +48,7 @@ import BridgeCard from './components/ui/bridge-card';
 import { AnimatedNavFramer } from './components/ui/navigation-menu';
 import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
 import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from './lib/feedback';
-import nftShowcaseVideo from './assets/litdex-nft-showcase.mp4.asset.json';
+import nftShowcaseVideo from './assets/boardpass-desktopview.mp4.asset.json';
 
 // --- Types ---
 type PageID = 'swap' | 'pool' | 'deploy' | 'points' | 'checkin' | 'nfts' | 'messenger' | 'quests' | 'games' | 'faucet' | 'hub' | 'chatui';
@@ -6198,7 +6198,7 @@ const GamesPage = () => {
         </div>
       </div>
       <div className="mb-4 px-4 py-3 rounded-xl bg-brand-surface border border-brand-border text-brand-text-primary text-xs">
-        ⏸ Points are paused for all games until the next update — you can still play everything as normal.
+        ⏸ Points are paused for all games until the next update. You can still play everything as normal.
       </div>
       <ProvablyFairModal open={pfOpen} onClose={() => setPfOpen(false)} />
       <CasinoWalletModal open={cwOpen} onClose={() => setCwOpen(false)} wallet={lowerAddr} />
