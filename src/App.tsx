@@ -200,8 +200,6 @@ const DeployerTotalCard = () => {
 
 /// --- Page: Swap ---
 const SwapPage = () => {
-  const eco = useEcosystemStats();
-  const [showBridge, setShowBridge] = useState(false);
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.98 }} 
