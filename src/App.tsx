@@ -499,9 +499,6 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    +10 PTS
-                  </div>
                   <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Daily Limit: 1/1</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
@@ -529,10 +526,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    +5 PTS
-                  </div>
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Daily Limit: 100 PTS</span>
+                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Deploy Contracts</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
                    Command <ArrowRight size={14} />
@@ -559,9 +553,6 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    VAR PTS
-                  </div>
                   <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Quest Based</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
@@ -589,10 +580,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
               
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                    +2 PTS
-                  </div>
-                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">Daily Limit: 20 PTS</span>
+                  <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-widest">On-chain Messaging</span>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-[0.2em] transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
                    Transmit <ArrowRight size={14} />
