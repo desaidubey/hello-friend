@@ -881,13 +881,13 @@ const NFTsPage = () => {
       title: "Mint a Champion",
       description: "Enter the LitDEX collection and mint your champion.",
       label: "Mint a Champion",
-      href: "https://litdex.test-hub.xyz/",
+      href: "https://nft.test-hub.xyz/",
     },
     {
       title: "Trade Your Champions",
       description: "Explore and trade the LitDEX collection on OpenSea.",
       label: "Trade Your Champions",
-      href: "https://litdex.test-hub.xyz/",
+      href: "https://opensea.io/collection/litdex",
     },
   ];
 
