@@ -725,14 +725,23 @@ export async function deployTokenLitDeX(opts: {
       } catch { /* ignore */ }
     }
   } catch { /* ignore */ }
-  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress };
+  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress, ...extractLdPoints(receipt) };
 }
 
 /** Read total deployed count (display = on-chain + DEPLOY_COUNT_BASE). */
 export async function readTotalDeployed(): Promise<number> {
   const c = new Contract(LITDEX_DEPLOYER_ADDRESS, LITDEX_DEPLOYER_ABI, readProvider);
-  const n = await c.totalDeployed();
-  return Number(n) + DEPLOY_COUNT_BASE;
+  let lastErr: any;
+  for (let i = 0; i < 4; i++) {
+    try {
+      const n = await c.totalDeployed();
+      return Number(n) + DEPLOY_COUNT_BASE;
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 /** Per-token actions (mint/burn/pause/unpause). Token must be from full TokenFactory. */
