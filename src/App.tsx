@@ -391,6 +391,11 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
         </div>
       </Card>
 
+      <Card className="p-6 bg-black/40 border-white/10 backdrop-blur-xl">
+        <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-white mb-2">Quest</h2>
+        <p className="text-brand-text-muted uppercase text-xs font-bold tracking-widest">Quest coming soon</p>
+      </Card>
+
 
     </motion.div>
   );
@@ -7586,7 +7591,7 @@ export default function App() {
       { id: 'checkin', icon: CalendarCheck, title: 'Check In', desc: 'Daily streak rewards' },
       { id: 'nfts', icon: Sparkles, title: 'NFTs', desc: 'Exclusive LiteForge assets' },
       { id: 'messenger', icon: MessageSquare, title: 'Messenger', desc: 'On-chain communication' },
-      { id: 'quests', icon: ListChecks, title: 'Quest', desc: 'Quests and challenges' },
+      
       
     ]
   };
