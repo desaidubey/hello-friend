@@ -2579,10 +2579,13 @@ contract LitVMTokenFactory is Ownable {
         pausable
       });
       setTxInfo({ hash: res.txHash, address: res.tokenAddress });
-      awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } });
       {
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = Number(afterLd.total - beforeLd.total);
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
+
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.tokenAddress;
         showSuccess({
