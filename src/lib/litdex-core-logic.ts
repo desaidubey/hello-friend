@@ -572,7 +572,7 @@ export async function addLiquidity(opts: {
     throw new Error("Cannot add zkLTC + zkLTC");
   }
   const receipt = await tx.wait();
-  return (receipt?.hash ?? tx.hash) as string;
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 /** Remove liquidity. `lpWei` is the LP-token amount to burn.
