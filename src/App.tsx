@@ -46,7 +46,7 @@ import type * as lib from './lib/litdex-core-logic';
 import SwapCard from './components/ui/crypto-swap-card';
 import BridgeCard from './components/ui/bridge-card';
 import { AnimatedNavFramer } from './components/ui/navigation-menu';
-import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
+import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readLDPoints, ldPointsRow, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
 import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from './lib/feedback';
 
 const NFT_SHOWCASE_VIDEO_MP4 = '/media/boardpass-desktopview.mp4';
