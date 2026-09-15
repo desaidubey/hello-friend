@@ -384,8 +384,7 @@ export default function SwapCard({
           const amtA = parseEther(fromAmount);
           const amtB = parseEther(toAmount);
 
-          const beforeLd = await readLDPoints(walletAddress);
-          const hash = await addLiquidity({
+          const { hash, ldGained, ldCapped } = await addLiquidity({
 
             tokenAAddr: fromAddr,
             tokenBAddr: toAddr,
@@ -404,15 +403,13 @@ export default function SwapCard({
               message: `Added liquidity to ${ta} / ${tb} pool`,
             });
           } catch { /* ignore */ }
-          const afterLd = await readLDPoints(walletAddress);
-          const ldGained = Number(afterLd.total - beforeLd.total);
           showSuccess({
             title: "LIQUIDITY ADDED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
               { label: "PAIR", value: `${ta} / ${tb}` },
               { label: "STATUS", value: "POOL UPDATED" },
-              ldPointsRow(ldGained),
+              ldPointsRow({ ldGained, ldCapped }),
             ],
           });
           refreshPoints();
@@ -425,8 +422,7 @@ export default function SwapCard({
           }
           const lpToRemove = (selectedLp.lpBalance * BigInt(Math.floor(removePercent))) / 100n;
           
-          const beforeLd = await readLDPoints(walletAddress);
-          const hash = await removeLiquidity({
+          const { hash, ldGained, ldCapped } = await removeLiquidity({
 
             tokenAAddr: selectedLp.token0,
             tokenBAddr: selectedLp.token1,
@@ -444,15 +440,13 @@ export default function SwapCard({
               message: `Removed liquidity from ${ta} / ${tb} pool`,
             });
           } catch { /* ignore */ }
-          const afterLd = await readLDPoints(walletAddress);
-          const ldGained = Number(afterLd.total - beforeLd.total);
           showSuccess({
             title: "LIQUIDITY REMOVED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
               { label: "PAIR", value: `${ta} / ${tb}` },
               { label: "STATUS", value: "POSITION CLOSED" },
-              ldPointsRow(ldGained),
+              ldPointsRow({ ldGained, ldCapped }),
             ],
           });
 
