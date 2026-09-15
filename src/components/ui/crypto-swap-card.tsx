@@ -397,16 +397,19 @@ export default function SwapCard({
               message: `Added liquidity to ${ta} / ${tb} pool`,
             });
           } catch { /* ignore */ }
+          const afterLd = await readLDPoints(walletAddress);
+          const ldGained = Number(afterLd.total - beforeLd.total);
           showSuccess({
             title: "LIQUIDITY ADDED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
               { label: "PAIR", value: `${ta} / ${tb}` },
               { label: "STATUS", value: "POOL UPDATED" },
+              ldPointsRow(ldGained),
             ],
           });
           refreshPoints();
-          awardActivity({ wallet: walletAddress, action: "pool", txHash: hash });
+
           fetchPositions();
         } else {
           if (!selectedLp) {
