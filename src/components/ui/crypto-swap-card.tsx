@@ -366,8 +366,6 @@ export default function SwapCard({
             message: `Swapped ${fromAmount} ${ti} → ${toAmount} ${to}`,
           });
         } catch { /* ignore */ }
-        const afterLd = await readLDPoints(walletAddress);
-        const ldGained = Number(afterLd.total - beforeLd.total);
         showSuccess({
           title: "SWAP CONFIRMED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
@@ -375,7 +373,7 @@ export default function SwapCard({
             { label: "SENT", value: `${fromAmount} ${ti}` },
             { label: "RECEIVED", value: `${toAmount} ${to}` },
             { label: "ROUTER", value: ROUTERS[rKey].label || "LitDEX" },
-            ldPointsRow(ldGained),
+            ldPointsRow({ ldGained, ldCapped }),
           ],
         });
         refreshPoints();
