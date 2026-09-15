@@ -617,7 +617,7 @@ export async function removeLiquidity(opts: {
     tx = await router.removeLiquidity(tokenAResolved, tokenBResolved, opts.lpWei, 0, 0, opts.recipient, deadline);
   }
   const receipt = await tx.wait();
-  return (receipt?.hash ?? tx.hash) as string;
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 export type LPPosition = {
