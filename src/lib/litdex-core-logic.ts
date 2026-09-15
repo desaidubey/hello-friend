@@ -916,11 +916,11 @@ export type CheckinInfo = {
   nextLDEX: bigint;
 };
 
-export async function checkinToday(): Promise<string> {
+export async function checkinToday(): Promise<{ hash: string; ldGained: number; ldCapped: boolean }> {
   const c = await getSignerContract(DAILY_CHECKIN_ADDRESS, DAILY_CHECKIN_ABI as never);
   const tx = await c.checkin();
-  await tx.wait();
-  return tx.hash as string;
+  const receipt = await tx.wait();
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 export async function readCheckinInfo(user: string): Promise<CheckinInfo> {
