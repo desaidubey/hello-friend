@@ -1718,5 +1718,5 @@ export async function sendMessage(to: string, content: string): Promise<SendMess
     console.warn("Telemetry failed:", e);
   }
 
-  return { hash: receipt.hash, success, msgsToday, reason };
+  return { hash: receipt.hash, success, msgsToday, reason, ...extractLdPoints(receipt) };
 }
