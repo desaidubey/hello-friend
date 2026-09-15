@@ -688,6 +688,8 @@ export async function getUserLPPositions(walletAddress: string): Promise<LPPosit
 export type DeployedTokenResult = {
   txHash: string;
   tokenAddress?: string;
+  ldGained: number;
+  ldCapped: boolean;
 };
 
 /** Deploy a basic ERC-20 via LitDeXDeployer (point-earning path). */
