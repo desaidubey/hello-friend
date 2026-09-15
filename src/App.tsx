@@ -849,13 +849,7 @@ const DeployPage = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto py-12 px-4">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-        <Card className="p-6 bg-white/[0.03] border-white/10 backdrop-blur-xl">
-          <p className="text-[10px] font-bold text-brand-text-muted uppercase tracking-[0.2em] mb-2">Total Deployed</p>
-          <h3 className="text-4xl font-black text-white italic tracking-tighter">
-            {totalDeployed ?? "..."}
-          </h3>
-        </Card>
+      <div className="grid grid-cols-1 gap-4 mb-12">
         <Card className="p-6 bg-white/[0.03] border-white/10 backdrop-blur-xl">
           <p className="text-[10px] font-bold text-brand-text-muted uppercase tracking-[0.2em] mb-2">Deployer</p>
           <div className="flex items-center justify-between">
@@ -2684,10 +2678,6 @@ contract LitVMTokenFactory is Ownable {
           <div>
             <h3 className="text-xl font-bold text-white tracking-tight">My Deployed Tokens</h3>
             <p className="text-xs text-brand-text-muted mt-1 uppercase font-bold tracking-widest">List of tokens you launched via this factory</p>
-          </div>
-          <div className="text-right">
-            <div className="text-2xl font-black text-white">{totalDeployed}</div>
-            <div className="text-[10px] text-brand-text-muted uppercase font-bold tracking-widest">Total Global Launch</div>
           </div>
         </div>
 
@@ -6736,16 +6726,6 @@ const MessengerPage = () => {
           <div className="flex flex-col">
             <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">Received</span>
             <span className="text-lg font-black text-white">{stats.received}</span>
-          </div>
-          <div className="w-px h-8 bg-white/5" />
-          <div className="flex flex-col">
-            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">Global On-Chain</span>
-            <span className="text-lg font-black text-white">{stats.total}</span>
-          </div>
-          <div className="w-px h-8 bg-white/5" />
-          <div className="flex flex-col">
-            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">Points</span>
-            <span className="text-lg font-black text-white">{backendPoints}</span>
           </div>
         </div>
       </div>
