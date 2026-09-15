@@ -2282,9 +2282,11 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
         label || "Token Vesting"
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
-      awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } });
       {
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = Number(afterLd.total - beforeLd.total);
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.contractAddress;
@@ -2295,8 +2297,10 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
           ],
         });
+
         refreshPoints();
       }
       onDeployed?.();
