@@ -17,7 +17,7 @@ const navItems: NavItem[] = [
   { name: "Points", id: "points" },
   { name: "NFTs", id: "nfts" },
   { name: "Messenger", id: "messenger" },
-  { name: "Quest", id: "quests" },
+  
   { name: "Games", id: "games" },
 ];
 
