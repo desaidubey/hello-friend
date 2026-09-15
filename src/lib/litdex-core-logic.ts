@@ -802,16 +802,44 @@ export async function readPoints(user: string): Promise<{ total: bigint; deployD
 export const LDPOINTS_ADDR = "0x26974eF1090b0cd9719B755aEc3d75a5DdD34e01";
 const LDPOINTS_ABI = ["function getPoints(address user) view returns (uint256 total, uint256 todayEarned, uint256 capRemaining)"];
 
-export async function readLDPoints(wallet: string): Promise<{ total: bigint; todayEarned: bigint; capRemaining: bigint }> {
-  const c = new Contract(LDPOINTS_ADDR, LDPOINTS_ABI, readProvider);
-  const [total, todayEarned, capRemaining] = await c.getPoints(wallet);
-  return { total: BigInt(total), todayEarned: BigInt(todayEarned), capRemaining: BigInt(capRemaining) };
+const LD_EVENTS_ABI = [
+  "event PointsEarned(address indexed user, bytes32 indexed actionType, uint256 basePoints, uint256 creditedPoints, uint256 newTotal)",
+  "event DailyCapHit(address indexed user, bytes32 indexed actionType)"
+];
+const ldPointsIface = new Interface(LD_EVENTS_ABI);
+
+/** Reads LD points result directly from an already-fetched tx receipt — no extra RPC call. */
+export function extractLdPoints(receipt: any): { ldGained: number; ldCapped: boolean } {
+  for (const log of receipt?.logs ?? []) {
+    if ((log.address || "").toLowerCase() !== LDPOINTS_ADDR.toLowerCase()) continue;
+    try {
+      const parsed = ldPointsIface.parseLog(log);
+      if (parsed?.name === "PointsEarned") return { ldGained: Number(parsed.args.creditedPoints), ldCapped: false };
+      if (parsed?.name === "DailyCapHit") return { ldGained: 0, ldCapped: true };
+    } catch { /* ignore */ }
+  }
+  return { ldGained: 0, ldCapped: false };
 }
 
-export function ldPointsRow(gained: number): { label: string; value: string } {
-  return gained > 0
-    ? { label: "LD POINTS", value: `+${gained} LD` }
-    : { label: "LD POINTS", value: "DAILY CAP REACHED" };
+export async function readLDPoints(wallet: string): Promise<{ total: bigint; todayEarned: bigint; capRemaining: bigint }> {
+  const c = new Contract(LDPOINTS_ADDR, LDPOINTS_ABI, readProvider);
+  let lastErr: any;
+  for (let i = 0; i < 4; i++) {
+    try {
+      const [total, todayEarned, capRemaining] = await c.getPoints(wallet);
+      return { total: BigInt(total), todayEarned: BigInt(todayEarned), capRemaining: BigInt(capRemaining) };
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
+export function ldPointsRow(info: { ldGained: number; ldCapped: boolean }): { label: string; value: string } {
+  if (info.ldCapped) return { label: "LD POINTS", value: "DAILY CAP REACHED" };
+  if (info.ldGained > 0) return { label: "LD POINTS", value: `+${info.ldGained} LD` };
+  return { label: "LD POINTS", value: "PENDING" };
 }
 
 
