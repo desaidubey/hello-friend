@@ -2012,9 +2012,11 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
         label || "Staking Pool"
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
-      awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } });
       {
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = Number(afterLd.total - beforeLd.total);
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.contractAddress;
@@ -2025,8 +2027,10 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
           ],
         });
+
         refreshPoints();
       }
       onDeployed?.();
