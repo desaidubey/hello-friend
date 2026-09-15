@@ -6671,59 +6671,36 @@ const MessengerPage = () => {
       const { sendMessage } = await import('./lib/litdex-core-logic');
       const target = msgType === 'public' ? 'public' : recipient;
 
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
       const result = await sendMessage(target, content);
       const sentHash = result.hash;
       setLastSentHash(sentHash);
 
-      // If the backend (legacy) or the frontend cap says daily limit
-      // hit, surface the cap popup instead of the +2 PTS card.
-      if (isCapReachedClick || (result.success === false && result.reason === "daily_limit")) {
-        setMsgCount(DAILY_MSG_LIMIT);
-        writeLocalMsgCount(DAILY_MSG_LIMIT);
-
-        const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${sentHash}`;
-        const shortHash = `${sentHash.slice(0, 6)}...${sentHash.slice(-4)}`;
-        showSuccess({
-          title: "DAILY CAP REACHED",
-          subtitle: "MESSAGE DELIVERED · NO MORE POINTS TODAY",
-          rows: [
-            { label: "POINTS EARNED", value: "+0 PTS (CAP REACHED)" },
-            { label: "TRANSACTION", value: shortHash, href: explorerUrl },
-            { label: "STATUS", value: "ON-CHAIN DELIVERED" },
-          ],
-        });
-
-        await fetchStats();
-        await fetchBackendPoints();
-        setContent('');
-        if (msgType === 'direct') setRecipient('');
-        setSending(false);
-        return;
-      }
-
-      // Determine new count: prefer backend value, otherwise increment locally
       const nextCount = typeof result.msgsToday === "number"
         ? result.msgsToday
         : (readLocalMsgCount() + 1);
       setMsgCount(nextCount);
       writeLocalMsgCount(nextCount);
 
-      // Refresh stats and backend-authoritative points (backend handles all point logic)
       await fetchStats();
       await fetchBackendPoints();
+
+      const afterLd = address ? await readLDPoints(address) : { total: 0n };
+      const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
 
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${sentHash}`;
       const shortHash = `${sentHash.slice(0, 6)}...${sentHash.slice(-4)}`;
 
       showSuccess({
-        title: "MESSAGE SENT",
-        subtitle: "PROTOCOL VERIFICATION COMPLETE",
+        title: ldGained > 0 ? "MESSAGE SENT" : "DAILY CAP REACHED",
+        subtitle: ldGained > 0 ? "PROTOCOL VERIFICATION COMPLETE" : "MESSAGE DELIVERED · NO MORE LD POINTS TODAY",
         rows: [
-          { label: "POINTS EARNED", value: "+2 PTS" },
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "ON-CHAIN DELIVERED" },
+          ldPointsRow(ldGained),
         ],
       });
+
 
       try {
         if (address) addNotif(address, {
