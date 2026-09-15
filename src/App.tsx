@@ -247,7 +247,7 @@ const PoolPage = () => {
 // --- Page: Points ---
 const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
   const { address, isConnected } = useAccount();
-  const [pointsData, setPointsData] = useState<{ total: bigint; deployDaily: bigint; msgDaily: bigint; hasCheckedIn: boolean } | null>(null);
+  const [pointsData, setPointsData] = useState<{ total: bigint; todayEarned: bigint; capRemaining: bigint } | null>(null);
   const [activity, setActivity] = useState<{ swap: number; pool: number; deployOffchain: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState("00:00:00");
@@ -257,7 +257,8 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
     if (!address) return;
     setLoading(true);
     try {
-      const p = await readPoints(address);
+      const p = await readLDPoints(address);
+
       setPointsData(p);
     } catch (err) {
       console.error(err);
