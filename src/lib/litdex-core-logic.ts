@@ -863,9 +863,9 @@ export async function readLDPoints(wallet: string): Promise<{ total: bigint; tod
 }
 
 export function ldPointsRow(info: { ldGained: number; ldCapped: boolean }): { label: string; value: string } {
-  if (info.ldCapped) return { label: "LD POINTS", value: "DAILY CAP REACHED" };
-  if (info.ldGained > 0) return { label: "LD POINTS", value: `+${info.ldGained} LD` };
-  return { label: "LD POINTS", value: "PENDING" };
+  if (info.ldCapped) return { label: "$LD", value: "DAILY CAP REACHED" };
+  if (info.ldGained > 0) return { label: "$LD", value: `+${info.ldGained} LD` };
+  return { label: "$LD", value: "PENDING" };
 }
 
 
