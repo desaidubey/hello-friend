@@ -316,19 +316,6 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
   }, []);
 
   const totalPoints = pointsData ? Number(pointsData.total) : 0;
-  const isCheckedIn = pointsData?.hasCheckedIn ?? false;
-
-  // Deploy = on-chain ERC20 (deployDaily, max 100) + off-chain 4 factory
-  // types (max 400) = combined out of 500.
-  const erc20Deploy = pointsData ? Number(pointsData.deployDaily) : 0;
-  const offchainDeploy = activity ? activity.deployOffchain : 0;
-  const dailyDeploy = erc20Deploy + offchainDeploy;
-  const deployCap = 500;
-  const deployProgress = Math.min(100, (dailyDeploy / deployCap) * 100);
-
-  const dailyMsg = pointsData ? Number(pointsData.msgDaily) : 0;
-  const msgCap = 20;
-  const msgProgress = (dailyMsg / msgCap) * 100;
 
   const dailySwap = activity ? activity.swap : 0;
   const swapCap = 100;
@@ -337,6 +324,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
   const dailyPool = activity ? activity.pool : 0;
   const poolCap = 100;
   const poolProgress = Math.min(100, (dailyPool / poolCap) * 100);
+
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-6xl mx-auto py-12 px-6">
