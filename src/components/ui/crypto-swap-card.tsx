@@ -341,7 +341,9 @@ export default function SwapCard({
         const amountInWei = parseEther(fromAmount);
         const path = activePath;
         
+        const beforeLd = await readLDPoints(walletAddress);
         const hash = await swap({
+
           routerKey: rKey,
           routerAddr: rAddr,
           tokenInAddr: fromAddr,
