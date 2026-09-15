@@ -441,6 +441,7 @@ const CheckinPage = () => {
     setSuccessMsg(null);
     setCheckinError(null);
     try {
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
       const hash = await checkinToday();
       const newInfo = await readCheckinInfo(address);
       
@@ -452,16 +453,20 @@ const CheckinPage = () => {
         hash
       });
 
+      const afterLd = address ? await readLDPoints(address) : { total: 0n };
+      const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
       const rows: { label: string; value: string }[] = [
         { label: "INCENTIVE YIELD", value: `+${Number(ldexVal).toLocaleString()} LDEX` },
       ];
       rows.push({ label: "STREAK", value: `Day ${Number(newInfo.streak)}` });
+      rows.push(ldPointsRow(ldGained));
       showSuccess({
         title: "MISSION SUCCESS",
         subtitle: "PROTOCOL VERIFICATION COMPLETE",
         rows,
       });
       refreshPoints();
+
 
       try {
         if (address) {
