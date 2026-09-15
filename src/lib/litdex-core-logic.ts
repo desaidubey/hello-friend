@@ -481,7 +481,7 @@ export async function swap(opts: {
   recipient: string;
   path: string[];            // already resolved (use buildSwapPath)
   deadlineSec?: number;      // default = SWAP_DEADLINE_SEC from now
-}): Promise<string> {
+}): Promise<{ hash: string; ldGained: number; ldCapped: boolean }> {
   const router = await getSignerContract(opts.routerAddr, ROUTER_ABI);
   const deadline = Math.floor(Date.now() / 1000) + (opts.deadlineSec ?? SWAP_DEADLINE_SEC);
 
