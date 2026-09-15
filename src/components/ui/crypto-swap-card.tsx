@@ -432,15 +432,18 @@ export default function SwapCard({
               message: `Removed liquidity from ${ta} / ${tb} pool`,
             });
           } catch { /* ignore */ }
+          const afterLd = await readLDPoints(walletAddress);
+          const ldGained = Number(afterLd.total - beforeLd.total);
           showSuccess({
             title: "LIQUIDITY REMOVED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
-              
               { label: "PAIR", value: `${ta} / ${tb}` },
-              { label: "STATUS", value: "POSITION CLOSED" }
+              { label: "STATUS", value: "POSITION CLOSED" },
+              ldPointsRow(ldGained),
             ],
           });
+
           refreshPoints();
 
           fetchPositions();
