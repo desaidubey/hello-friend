@@ -395,7 +395,10 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
         </div>
 
         <div className="mt-8 relative z-10">
-          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">Points collection has ended. Final snapshot has been taken.</p>
+          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">
+            {pointsData ? `${Number(pointsData.todayEarned)} earned today · ${Number(pointsData.capRemaining)} remaining until daily cap` : ""}
+          </p>
+
         </div>
       </Card>
 
