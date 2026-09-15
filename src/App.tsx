@@ -816,6 +816,13 @@ const DeployPage = () => {
     }
   };
 
+  // Optimistic bump right after any deploy; the retrying fetchData corrects it.
+  const afterAnyDeploy = () => {
+    setTotalDeployed((prev) => (prev == null ? prev : prev + 1));
+    fetchHistory();
+    fetchData();
+  };
+
   useEffect(() => {
     fetchData();
     if (isConnected && address) {
