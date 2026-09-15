@@ -415,7 +415,9 @@ export default function SwapCard({
           }
           const lpToRemove = (selectedLp.lpBalance * BigInt(Math.floor(removePercent))) / 100n;
           
+          const beforeLd = await readLDPoints(walletAddress);
           const hash = await removeLiquidity({
+
             tokenAAddr: selectedLp.token0,
             tokenBAddr: selectedLp.token1,
             lpWei: lpToRemove,
