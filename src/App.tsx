@@ -2595,8 +2595,10 @@ contract LitVMTokenFactory is Ownable {
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
           ],
         });
+
         refreshPoints();
       }
       onDeployed?.();
