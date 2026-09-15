@@ -779,7 +779,8 @@ const DeployPage = () => {
   }, [address]);
   useEffect(() => {
     fetchDeployCounts();
-    const h = () => fetchDeployCounts();
+    fetchData();
+    const h = () => { fetchDeployCounts(); fetchData(); };
     window.addEventListener("litdex:activity-refresh", h);
     window.addEventListener("litdex:points-refresh", h);
     return () => {
@@ -866,14 +867,6 @@ const DeployPage = () => {
       <div className="flex flex-wrap justify-center gap-2 mb-12">
         {types.map((t) => (
           <div key={t.id} className="flex flex-col items-center gap-1.5">
-            {isConnected && (
-              <span
-                title={`${t.name} deploys today (+5 each, max ${PER_TYPE_CAP})`}
-                className="italic text-[10px] font-medium text-white/60 tabular-nums px-2 py-0.5 rounded-full border border-white/10 bg-white/5"
-              >
-                {Math.min(deployCounts[t.id] ?? 0, PER_TYPE_CAP)}/{PER_TYPE_CAP}
-              </span>
-            )}
             <button
               onClick={() => setSelectedType(t.id)}
               className={cn(
@@ -1264,13 +1257,6 @@ const ERC20Form = ({ onDeployed }: any) => {
               </div>
             </div>
 
-            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Points Reward</p>
-                <h4 className="text-2xl font-black text-white mt-1">{capReachedDisplay ? "DAILY CAP REACHED" : "+5 points"}</h4>
-              </div>
-              <Coins className="text-white opacity-20" size={32} />
-            </div>
 
             {txStatus && (
               <motion.div 
