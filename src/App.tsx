@@ -1521,8 +1521,10 @@ contract MNFT is ERC721, Ownable {
       setTxStatus("success");
       const ca = (result as any).tokenAddress as string | undefined;
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${result.txHash}`;
-      awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } });
+      const afterLd = address ? await readLDPoints(address) : { total: 0n };
+      const ldGained = Number(afterLd.total - beforeLd.total);
       const shortHash = `${result.txHash.slice(0, 6)}...${result.txHash.slice(-4)}`;
       try {
         if (address) addNotif(address, {
@@ -1538,8 +1540,10 @@ contract MNFT is ERC721, Ownable {
           { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "LIVE ON LITVM" },
+          ldPointsRow(ldGained),
         ],
       });
+
       refreshPoints();
       onDeployed?.();
     } catch (err) {
