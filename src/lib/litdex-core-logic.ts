@@ -22,7 +22,7 @@
  * ----------------------------------------------------------------------------
  */
 
-import { BrowserProvider, Contract, JsonRpcProvider, parseEther, parseUnits, formatEther } from "ethers";
+import { BrowserProvider, Contract, Interface, JsonRpcProvider, parseEther, parseUnits, formatEther } from "ethers";
 import { defineChain, parseAbi } from "viem";
 import { http } from "wagmi";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
@@ -481,7 +481,7 @@ export async function swap(opts: {
   recipient: string;
   path: string[];            // already resolved (use buildSwapPath)
   deadlineSec?: number;      // default = SWAP_DEADLINE_SEC from now
-}): Promise<string> {
+}): Promise<{ hash: string; ldGained: number; ldCapped: boolean }> {
   const router = await getSignerContract(opts.routerAddr, ROUTER_ABI);
   const deadline = Math.floor(Date.now() / 1000) + (opts.deadlineSec ?? SWAP_DEADLINE_SEC);
 
@@ -499,7 +499,7 @@ export async function swap(opts: {
     tx = await router.swapExactTokensForTokens(opts.amountInWei, opts.amountOutMinWei, opts.path, opts.recipient, deadline);
   }
   const receipt = await tx.wait();
-  return (receipt?.hash ?? tx.hash) as string;
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 /* =====================================================================
@@ -557,7 +557,7 @@ export async function addLiquidity(opts: {
   recipient: string;
   slippageBps?: bigint;     // default 1000 (10%) — used to compute amountMin
   deadlineSec?: number;
-}): Promise<string> {
+}): Promise<{ hash: string; ldGained: number; ldCapped: boolean }> {
   const router = await getSignerContract(DEFAULT_ROUTER, ROUTER_ABI);
   const deadline = Math.floor(Date.now() / 1000) + (opts.deadlineSec ?? SWAP_DEADLINE_SEC);
 
@@ -572,7 +572,7 @@ export async function addLiquidity(opts: {
     throw new Error("Cannot add zkLTC + zkLTC");
   }
   const receipt = await tx.wait();
-  return (receipt?.hash ?? tx.hash) as string;
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 /** Remove liquidity. `lpWei` is the LP-token amount to burn.
@@ -585,7 +585,7 @@ export async function removeLiquidity(opts: {
   lpWei: bigint;
   recipient: string;
   deadlineSec?: number;
-}): Promise<string> {
+}): Promise<{ hash: string; ldGained: number; ldCapped: boolean }> {
   const router = await getSignerContract(DEFAULT_ROUTER, ROUTER_ABI);
   const deadline = Math.floor(Date.now() / 1000) + (opts.deadlineSec ?? SWAP_DEADLINE_SEC);
 
@@ -617,7 +617,7 @@ export async function removeLiquidity(opts: {
     tx = await router.removeLiquidity(tokenAResolved, tokenBResolved, opts.lpWei, 0, 0, opts.recipient, deadline);
   }
   const receipt = await tx.wait();
-  return (receipt?.hash ?? tx.hash) as string;
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 export type LPPosition = {
@@ -688,6 +688,8 @@ export async function getUserLPPositions(walletAddress: string): Promise<LPPosit
 export type DeployedTokenResult = {
   txHash: string;
   tokenAddress?: string;
+  ldGained: number;
+  ldCapped: boolean;
 };
 
 /** Deploy a basic ERC-20 via LitDeXDeployer (point-earning path). */
@@ -723,14 +725,23 @@ export async function deployTokenLitDeX(opts: {
       } catch { /* ignore */ }
     }
   } catch { /* ignore */ }
-  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress };
+  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress, ...extractLdPoints(receipt) };
 }
 
 /** Read total deployed count (display = on-chain + DEPLOY_COUNT_BASE). */
 export async function readTotalDeployed(): Promise<number> {
   const c = new Contract(LITDEX_DEPLOYER_ADDRESS, LITDEX_DEPLOYER_ABI, readProvider);
-  const n = await c.totalDeployed();
-  return Number(n) + DEPLOY_COUNT_BASE;
+  let lastErr: any;
+  for (let i = 0; i < 4; i++) {
+    try {
+      const n = await c.totalDeployed();
+      return Number(n) + DEPLOY_COUNT_BASE;
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 /** Per-token actions (mint/burn/pause/unpause). Token must be from full TokenFactory. */
@@ -802,16 +813,44 @@ export async function readPoints(user: string): Promise<{ total: bigint; deployD
 export const LDPOINTS_ADDR = "0x26974eF1090b0cd9719B755aEc3d75a5DdD34e01";
 const LDPOINTS_ABI = ["function getPoints(address user) view returns (uint256 total, uint256 todayEarned, uint256 capRemaining)"];
 
-export async function readLDPoints(wallet: string): Promise<{ total: bigint; todayEarned: bigint; capRemaining: bigint }> {
-  const c = new Contract(LDPOINTS_ADDR, LDPOINTS_ABI, readProvider);
-  const [total, todayEarned, capRemaining] = await c.getPoints(wallet);
-  return { total: BigInt(total), todayEarned: BigInt(todayEarned), capRemaining: BigInt(capRemaining) };
+const LD_EVENTS_ABI = [
+  "event PointsEarned(address indexed user, bytes32 indexed actionType, uint256 basePoints, uint256 creditedPoints, uint256 newTotal)",
+  "event DailyCapHit(address indexed user, bytes32 indexed actionType)"
+];
+const ldPointsIface = new Interface(LD_EVENTS_ABI);
+
+/** Reads LD points result directly from an already-fetched tx receipt — no extra RPC call. */
+export function extractLdPoints(receipt: any): { ldGained: number; ldCapped: boolean } {
+  for (const log of receipt?.logs ?? []) {
+    if ((log.address || "").toLowerCase() !== LDPOINTS_ADDR.toLowerCase()) continue;
+    try {
+      const parsed = ldPointsIface.parseLog(log);
+      if (parsed?.name === "PointsEarned") return { ldGained: Number(parsed.args.creditedPoints), ldCapped: false };
+      if (parsed?.name === "DailyCapHit") return { ldGained: 0, ldCapped: true };
+    } catch { /* ignore */ }
+  }
+  return { ldGained: 0, ldCapped: false };
 }
 
-export function ldPointsRow(gained: number): { label: string; value: string } {
-  return gained > 0
-    ? { label: "LD POINTS", value: `+${gained} LD` }
-    : { label: "LD POINTS", value: "DAILY CAP REACHED" };
+export async function readLDPoints(wallet: string): Promise<{ total: bigint; todayEarned: bigint; capRemaining: bigint }> {
+  const c = new Contract(LDPOINTS_ADDR, LDPOINTS_ABI, readProvider);
+  let lastErr: any;
+  for (let i = 0; i < 4; i++) {
+    try {
+      const [total, todayEarned, capRemaining] = await c.getPoints(wallet);
+      return { total: BigInt(total), todayEarned: BigInt(todayEarned), capRemaining: BigInt(capRemaining) };
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
+export function ldPointsRow(info: { ldGained: number; ldCapped: boolean }): { label: string; value: string } {
+  if (info.ldCapped) return { label: "LD POINTS", value: "DAILY CAP REACHED" };
+  if (info.ldGained > 0) return { label: "LD POINTS", value: `+${info.ldGained} LD` };
+  return { label: "LD POINTS", value: "PENDING" };
 }
 
 
@@ -877,11 +916,11 @@ export type CheckinInfo = {
   nextLDEX: bigint;
 };
 
-export async function checkinToday(): Promise<string> {
+export async function checkinToday(): Promise<{ hash: string; ldGained: number; ldCapped: boolean }> {
   const c = await getSignerContract(DAILY_CHECKIN_ADDRESS, DAILY_CHECKIN_ABI as never);
   const tx = await c.checkin();
-  await tx.wait();
-  return tx.hash as string;
+  const receipt = await tx.wait();
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 export async function readCheckinInfo(user: string): Promise<CheckinInfo> {
@@ -1387,7 +1426,7 @@ export async function deployNFTLitDeX(opts: {
     }
   } catch { /* ignore */ }
   
-  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress };
+  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress, ...extractLdPoints(receipt) };
 }
 
 /** Deployment wrapper for Staking. */
@@ -1637,6 +1676,8 @@ export type SendMessageResult = {
   success?: boolean;
   msgsToday?: number;
   reason?: string;
+  ldGained: number;
+  ldCapped: boolean;
 };
 
 export async function sendMessage(to: string, content: string): Promise<SendMessageResult> {
@@ -1677,5 +1718,5 @@ export async function sendMessage(to: string, content: string): Promise<SendMess
     console.warn("Telemetry failed:", e);
   }
 
-  return { hash: receipt.hash, success, msgsToday, reason };
+  return { hash: receipt.hash, success, msgsToday, reason, ...extractLdPoints(receipt) };
 }

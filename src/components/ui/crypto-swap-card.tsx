@@ -27,14 +27,13 @@ import {
   getUserLPPositions,
   LPPosition,
   readProvider,
-  readLDPoints,
   ldPointsRow
 
 } from "@/lib/litdex-core-logic"
 import type { RouterKey } from "@/lib/litdex-core-logic"
 import { ChevronDown } from "lucide-react"
 import { addNotif } from "@/lib/notifications"
-import { showSuccess, showError, refreshPoints, awardActivity } from "@/lib/feedback"
+import { showSuccess, showError, refreshPoints } from "@/lib/feedback"
 
 type Coin = {
   address: string
@@ -344,8 +343,7 @@ export default function SwapCard({
         const amountInWei = parseEther(fromAmount);
         const path = activePath;
         
-        const beforeLd = await readLDPoints(walletAddress);
-        const hash = await swap({
+        const { hash, ldGained, ldCapped } = await swap({
 
           routerKey: rKey,
           routerAddr: rAddr,
@@ -367,8 +365,6 @@ export default function SwapCard({
             message: `Swapped ${fromAmount} ${ti} → ${toAmount} ${to}`,
           });
         } catch { /* ignore */ }
-        const afterLd = await readLDPoints(walletAddress);
-        const ldGained = Number(afterLd.total - beforeLd.total);
         showSuccess({
           title: "SWAP CONFIRMED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
@@ -376,7 +372,7 @@ export default function SwapCard({
             { label: "SENT", value: `${fromAmount} ${ti}` },
             { label: "RECEIVED", value: `${toAmount} ${to}` },
             { label: "ROUTER", value: ROUTERS[rKey].label || "LitDEX" },
-            ldPointsRow(ldGained),
+            ldPointsRow({ ldGained, ldCapped }),
           ],
         });
         refreshPoints();
@@ -387,8 +383,7 @@ export default function SwapCard({
           const amtA = parseEther(fromAmount);
           const amtB = parseEther(toAmount);
 
-          const beforeLd = await readLDPoints(walletAddress);
-          const hash = await addLiquidity({
+          const { hash, ldGained, ldCapped } = await addLiquidity({
 
             tokenAAddr: fromAddr,
             tokenBAddr: toAddr,
@@ -407,15 +402,13 @@ export default function SwapCard({
               message: `Added liquidity to ${ta} / ${tb} pool`,
             });
           } catch { /* ignore */ }
-          const afterLd = await readLDPoints(walletAddress);
-          const ldGained = Number(afterLd.total - beforeLd.total);
           showSuccess({
             title: "LIQUIDITY ADDED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
               { label: "PAIR", value: `${ta} / ${tb}` },
               { label: "STATUS", value: "POOL UPDATED" },
-              ldPointsRow(ldGained),
+              ldPointsRow({ ldGained, ldCapped }),
             ],
           });
           refreshPoints();
@@ -428,8 +421,7 @@ export default function SwapCard({
           }
           const lpToRemove = (selectedLp.lpBalance * BigInt(Math.floor(removePercent))) / 100n;
           
-          const beforeLd = await readLDPoints(walletAddress);
-          const hash = await removeLiquidity({
+          const { hash, ldGained, ldCapped } = await removeLiquidity({
 
             tokenAAddr: selectedLp.token0,
             tokenBAddr: selectedLp.token1,
@@ -447,15 +439,13 @@ export default function SwapCard({
               message: `Removed liquidity from ${ta} / ${tb} pool`,
             });
           } catch { /* ignore */ }
-          const afterLd = await readLDPoints(walletAddress);
-          const ldGained = Number(afterLd.total - beforeLd.total);
           showSuccess({
             title: "LIQUIDITY REMOVED",
             subtitle: "PROTOCOL VERIFICATION COMPLETE",
             rows: [
               { label: "PAIR", value: `${ta} / ${tb}` },
               { label: "STATUS", value: "POSITION CLOSED" },
-              ldPointsRow(ldGained),
+              ldPointsRow({ ldGained, ldCapped }),
             ],
           });
 
