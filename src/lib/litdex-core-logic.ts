@@ -499,7 +499,7 @@ export async function swap(opts: {
     tx = await router.swapExactTokensForTokens(opts.amountInWei, opts.amountOutMinWei, opts.path, opts.recipient, deadline);
   }
   const receipt = await tx.wait();
-  return (receipt?.hash ?? tx.hash) as string;
+  return { hash: (receipt?.hash ?? tx.hash) as string, ...extractLdPoints(receipt) };
 }
 
 /* =====================================================================
