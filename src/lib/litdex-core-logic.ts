@@ -1426,7 +1426,7 @@ export async function deployNFTLitDeX(opts: {
     }
   } catch { /* ignore */ }
   
-  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress };
+  return { txHash: (receipt?.hash ?? tx.hash) as string, tokenAddress, ...extractLdPoints(receipt) };
 }
 
 /** Deployment wrapper for Staking. */
