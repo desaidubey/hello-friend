@@ -442,7 +442,7 @@ export default function SwapCard({
             ],
           });
           refreshPoints();
-          awardActivity({ wallet: walletAddress, action: "pool", txHash: hash });
+
           fetchPositions();
           setSelectedLp(null);
         }
