@@ -1676,6 +1676,8 @@ export type SendMessageResult = {
   success?: boolean;
   msgsToday?: number;
   reason?: string;
+  ldGained: number;
+  ldCapped: boolean;
 };
 
 export async function sendMessage(to: string, content: string): Promise<SendMessageResult> {
