@@ -379,7 +379,9 @@ export default function SwapCard({
           const amtA = parseEther(fromAmount);
           const amtB = parseEther(toAmount);
 
+          const beforeLd = await readLDPoints(walletAddress);
           const hash = await addLiquidity({
+
             tokenAAddr: fromAddr,
             tokenBAddr: toAddr,
             amountAWei: amtA,
