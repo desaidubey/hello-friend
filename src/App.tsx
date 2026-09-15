@@ -374,7 +374,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
                 Accumulated Points
               </span>
               <span className="px-2 py-0.5 bg-white/10 text-white text-[9px] font-bold uppercase tracking-widest rounded border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                Snapshot Taken
+                LD Points
               </span>
             </div>
             <div className="text-8xl font-black text-white tracking-tighter leading-none select-none filter drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
