@@ -362,6 +362,8 @@ export default function SwapCard({
             message: `Swapped ${fromAmount} ${ti} → ${toAmount} ${to}`,
           });
         } catch { /* ignore */ }
+        const afterLd = await readLDPoints(walletAddress);
+        const ldGained = Number(afterLd.total - beforeLd.total);
         showSuccess({
           title: "SWAP CONFIRMED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
@@ -369,10 +371,11 @@ export default function SwapCard({
             { label: "SENT", value: `${fromAmount} ${ti}` },
             { label: "RECEIVED", value: `${toAmount} ${to}` },
             { label: "ROUTER", value: ROUTERS[rKey].label || "LitDEX" },
+            ldPointsRow(ldGained),
           ],
         });
         refreshPoints();
-        awardActivity({ wallet: walletAddress, action: "swap", txHash: hash });
+
       } else {
         if (subMode === "add" || (subMode === "remove" && poolAction === "add")) {
           const rKey = "liteswap";
