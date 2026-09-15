@@ -46,7 +46,7 @@ import type * as lib from './lib/litdex-core-logic';
 import SwapCard from './components/ui/crypto-swap-card';
 import BridgeCard from './components/ui/bridge-card';
 import { AnimatedNavFramer } from './components/ui/navigation-menu';
-import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
+import { litvmChain, errMsg, LITDEX_DEPLOYER_ADDRESS, readTotalDeployed, deployTokenLitDeX, shortAddr, readDeployments, readDeployFee, readLegacyDeployFee, deployTokenLegacy, getLegacyTokenInfo, getLegacyTokensByCreator, getLegacyTotalDeployedDisplay, readPoints, readLDPoints, ldPointsRow, readCheckinInfo, readCurrentDay, checkinToday } from './lib/litdex-core-logic';
 import { showSuccess, showError, showInfo, refreshPoints, awardActivity } from './lib/feedback';
 
 const NFT_SHOWCASE_VIDEO_MP4 = '/media/boardpass-desktopview.mp4';
@@ -247,7 +247,7 @@ const PoolPage = () => {
 // --- Page: Points ---
 const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
   const { address, isConnected } = useAccount();
-  const [pointsData, setPointsData] = useState<{ total: bigint; deployDaily: bigint; msgDaily: bigint; hasCheckedIn: boolean } | null>(null);
+  const [pointsData, setPointsData] = useState<{ total: bigint; todayEarned: bigint; capRemaining: bigint } | null>(null);
   const [activity, setActivity] = useState<{ swap: number; pool: number; deployOffchain: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState("00:00:00");
@@ -257,7 +257,8 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
     if (!address) return;
     setLoading(true);
     try {
-      const p = await readPoints(address);
+      const p = await readLDPoints(address);
+
       setPointsData(p);
     } catch (err) {
       console.error(err);
@@ -316,19 +317,6 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
   }, []);
 
   const totalPoints = pointsData ? Number(pointsData.total) : 0;
-  const isCheckedIn = pointsData?.hasCheckedIn ?? false;
-
-  // Deploy = on-chain ERC20 (deployDaily, max 100) + off-chain 4 factory
-  // types (max 400) = combined out of 500.
-  const erc20Deploy = pointsData ? Number(pointsData.deployDaily) : 0;
-  const offchainDeploy = activity ? activity.deployOffchain : 0;
-  const dailyDeploy = erc20Deploy + offchainDeploy;
-  const deployCap = 500;
-  const deployProgress = Math.min(100, (dailyDeploy / deployCap) * 100);
-
-  const dailyMsg = pointsData ? Number(pointsData.msgDaily) : 0;
-  const msgCap = 20;
-  const msgProgress = (dailyMsg / msgCap) * 100;
 
   const dailySwap = activity ? activity.swap : 0;
   const swapCap = 100;
@@ -337,6 +325,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
   const dailyPool = activity ? activity.pool : 0;
   const poolCap = 100;
   const poolProgress = Math.min(100, (dailyPool / poolCap) * 100);
+
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-6xl mx-auto py-12 px-6">
@@ -374,7 +363,7 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
                 Accumulated Points
               </span>
               <span className="px-2 py-0.5 bg-white/10 text-white text-[9px] font-bold uppercase tracking-widest rounded border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                Snapshot Taken
+                LD Points
               </span>
             </div>
             <div className="text-8xl font-black text-white tracking-tighter leading-none select-none filter drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
@@ -395,7 +384,10 @@ const PointsPage = ({ setPage }: { setPage: (p: PageID) => void }) => {
         </div>
 
         <div className="mt-8 relative z-10">
-          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">Points collection has ended. Final snapshot has been taken.</p>
+          <p className="text-[9px] text-brand-text-muted uppercase tracking-[0.2em] font-medium">
+            {pointsData ? `${Number(pointsData.todayEarned)} earned today · ${Number(pointsData.capRemaining)} remaining until daily cap` : ""}
+          </p>
+
         </div>
       </Card>
 
@@ -449,6 +441,7 @@ const CheckinPage = () => {
     setSuccessMsg(null);
     setCheckinError(null);
     try {
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
       const hash = await checkinToday();
       const newInfo = await readCheckinInfo(address);
       
@@ -460,16 +453,20 @@ const CheckinPage = () => {
         hash
       });
 
+      const afterLd = address ? await readLDPoints(address) : { total: 0n };
+      const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
       const rows: { label: string; value: string }[] = [
         { label: "INCENTIVE YIELD", value: `+${Number(ldexVal).toLocaleString()} LDEX` },
       ];
       rows.push({ label: "STREAK", value: `Day ${Number(newInfo.streak)}` });
+      rows.push(ldPointsRow(ldGained));
       showSuccess({
         title: "MISSION SUCCESS",
         subtitle: "PROTOCOL VERIFICATION COMPLETE",
         rows,
       });
       refreshPoints();
+
 
       try {
         if (address) {
@@ -1081,13 +1078,7 @@ const ERC20Form = ({ onDeployed }: any) => {
     setTxStatus(null);
     setTxHash(null);
 
-    let dailyBefore = 0n;
-    try {
-      if (address) {
-        const before = await readPoints(address);
-        dailyBefore = before.deployDaily;
-      }
-    } catch { /* ignore */ }
+    const beforeLd = address ? await readLDPoints(address) : { total: 0n };
 
     try {
       const result = await deployTokenLitDeX({
@@ -1115,28 +1106,20 @@ const ERC20Form = ({ onDeployed }: any) => {
       setTimeout(async () => {
         try { if (address) await refreshDeployDaily(); } catch { /* ignore */ }
         refreshPoints();
-        const capReached = dailyBefore >= 100n;
-        if (capReached) {
-          showSuccess({
-            title: "DAILY CAP REACHED",
-            subtitle: "MAX 20 TOKEN DEPLOYS PER DAY",
-            rows: [
-              { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
-              { label: "STATUS", value: "LIVE ON LITVM" },
-            ],
-          });
-        } else {
-          showSuccess({
-            title: "TOKEN DEPLOYED",
-            subtitle: "PROTOCOL VERIFICATION COMPLETE",
-            rows: [
-              { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
-              { label: "STATUS", value: "LIVE ON LITVM" },
-            ],
-          });
-        }
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
+        showSuccess({
+          title: "TOKEN DEPLOYED",
+          subtitle: "PROTOCOL VERIFICATION COMPLETE",
+          rows: [
+            { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
+            { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
+          ],
+        });
         onDeployed?.();
       }, 3000);
+
     } catch (err) {
       console.error("Deploy error:", err);
       setTxStatus("failed");
@@ -1538,8 +1521,10 @@ contract MNFT is ERC721, Ownable {
       setTxStatus("success");
       const ca = (result as any).tokenAddress as string | undefined;
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${result.txHash}`;
-      awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } });
+      const afterLd = address ? await readLDPoints(address) : { total: 0n };
+      const ldGained = Number(afterLd.total - beforeLd.total);
       const shortHash = `${result.txHash.slice(0, 6)}...${result.txHash.slice(-4)}`;
       try {
         if (address) addNotif(address, {
@@ -1555,8 +1540,10 @@ contract MNFT is ERC721, Ownable {
           { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "LIVE ON LITVM" },
+          ldPointsRow(ldGained),
         ],
       });
+
       refreshPoints();
       onDeployed?.();
     } catch (err) {
@@ -2029,9 +2016,11 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
         label || "Staking Pool"
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
-      awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } });
       {
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = Number(afterLd.total - beforeLd.total);
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.contractAddress;
@@ -2042,8 +2031,10 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
           ],
         });
+
         refreshPoints();
       }
       onDeployed?.();
@@ -2299,9 +2290,11 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
         label || "Token Vesting"
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
-      awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } });
       {
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = Number(afterLd.total - beforeLd.total);
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.contractAddress;
@@ -2312,8 +2305,10 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
           ],
         });
+
         refreshPoints();
       }
       onDeployed?.();
@@ -2596,10 +2591,13 @@ contract LitVMTokenFactory is Ownable {
         pausable
       });
       setTxInfo({ hash: res.txHash, address: res.tokenAddress });
-      awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } }).then((r) => {
-      });
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
+      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } });
       {
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = Number(afterLd.total - beforeLd.total);
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
+
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.tokenAddress;
         showSuccess({
@@ -2609,8 +2607,10 @@ contract LitVMTokenFactory is Ownable {
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
           ],
         });
+
         refreshPoints();
       }
       onDeployed?.();
@@ -6671,59 +6671,36 @@ const MessengerPage = () => {
       const { sendMessage } = await import('./lib/litdex-core-logic');
       const target = msgType === 'public' ? 'public' : recipient;
 
+      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
       const result = await sendMessage(target, content);
       const sentHash = result.hash;
       setLastSentHash(sentHash);
 
-      // If the backend (legacy) or the frontend cap says daily limit
-      // hit, surface the cap popup instead of the +2 PTS card.
-      if (isCapReachedClick || (result.success === false && result.reason === "daily_limit")) {
-        setMsgCount(DAILY_MSG_LIMIT);
-        writeLocalMsgCount(DAILY_MSG_LIMIT);
-
-        const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${sentHash}`;
-        const shortHash = `${sentHash.slice(0, 6)}...${sentHash.slice(-4)}`;
-        showSuccess({
-          title: "DAILY CAP REACHED",
-          subtitle: "MESSAGE DELIVERED · NO MORE POINTS TODAY",
-          rows: [
-            { label: "POINTS EARNED", value: "+0 PTS (CAP REACHED)" },
-            { label: "TRANSACTION", value: shortHash, href: explorerUrl },
-            { label: "STATUS", value: "ON-CHAIN DELIVERED" },
-          ],
-        });
-
-        await fetchStats();
-        await fetchBackendPoints();
-        setContent('');
-        if (msgType === 'direct') setRecipient('');
-        setSending(false);
-        return;
-      }
-
-      // Determine new count: prefer backend value, otherwise increment locally
       const nextCount = typeof result.msgsToday === "number"
         ? result.msgsToday
         : (readLocalMsgCount() + 1);
       setMsgCount(nextCount);
       writeLocalMsgCount(nextCount);
 
-      // Refresh stats and backend-authoritative points (backend handles all point logic)
       await fetchStats();
       await fetchBackendPoints();
+
+      const afterLd = address ? await readLDPoints(address) : { total: 0n };
+      const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
 
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${sentHash}`;
       const shortHash = `${sentHash.slice(0, 6)}...${sentHash.slice(-4)}`;
 
       showSuccess({
-        title: "MESSAGE SENT",
-        subtitle: "PROTOCOL VERIFICATION COMPLETE",
+        title: ldGained > 0 ? "MESSAGE SENT" : "DAILY CAP REACHED",
+        subtitle: ldGained > 0 ? "PROTOCOL VERIFICATION COMPLETE" : "MESSAGE DELIVERED · NO MORE LD POINTS TODAY",
         rows: [
-          { label: "POINTS EARNED", value: "+2 PTS" },
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "ON-CHAIN DELIVERED" },
+          ldPointsRow(ldGained),
         ],
       });
+
 
       try {
         if (address) addNotif(address, {

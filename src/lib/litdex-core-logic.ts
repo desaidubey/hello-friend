@@ -799,6 +799,23 @@ export async function readPoints(user: string): Promise<{ total: bigint; deployD
   }
 }
 
+export const LDPOINTS_ADDR = "0x26974eF1090b0cd9719B755aEc3d75a5DdD34e01";
+const LDPOINTS_ABI = ["function getPoints(address user) view returns (uint256 total, uint256 todayEarned, uint256 capRemaining)"];
+
+export async function readLDPoints(wallet: string): Promise<{ total: bigint; todayEarned: bigint; capRemaining: bigint }> {
+  const c = new Contract(LDPOINTS_ADDR, LDPOINTS_ABI, readProvider);
+  const [total, todayEarned, capRemaining] = await c.getPoints(wallet);
+  return { total: BigInt(total), todayEarned: BigInt(todayEarned), capRemaining: BigInt(capRemaining) };
+}
+
+export function ldPointsRow(gained: number): { label: string; value: string } {
+  return gained > 0
+    ? { label: "LD POINTS", value: `+${gained} LD` }
+    : { label: "LD POINTS", value: "DAILY CAP REACHED" };
+}
+
+
+
 export async function readUserData(user: string): Promise<UserPointsData> {
   const c = new Contract(POINTS_SYSTEM_ADDRESS, POINTS_SYSTEM_ABI as never, readProvider);
   const [totalPoints, dailyPoints, lastDayReset, referrer, pendingReferralPoints] = await c.users(user);
