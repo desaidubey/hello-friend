@@ -557,7 +557,7 @@ export async function addLiquidity(opts: {
   recipient: string;
   slippageBps?: bigint;     // default 1000 (10%) — used to compute amountMin
   deadlineSec?: number;
-}): Promise<string> {
+}): Promise<{ hash: string; ldGained: number; ldCapped: boolean }> {
   const router = await getSignerContract(DEFAULT_ROUTER, ROUTER_ABI);
   const deadline = Math.floor(Date.now() / 1000) + (opts.deadlineSec ?? SWAP_DEADLINE_SEC);
 
