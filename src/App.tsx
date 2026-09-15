@@ -441,8 +441,7 @@ const CheckinPage = () => {
     setSuccessMsg(null);
     setCheckinError(null);
     try {
-      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
-      const hash = await checkinToday();
+      const { hash, ldGained, ldCapped } = await checkinToday();
       const newInfo = await readCheckinInfo(address);
       
       const ldexVal = formatEther(newInfo.nextLDEX);
@@ -453,13 +452,11 @@ const CheckinPage = () => {
         hash
       });
 
-      const afterLd = address ? await readLDPoints(address) : { total: 0n };
-      const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
       const rows: { label: string; value: string }[] = [
         { label: "INCENTIVE YIELD", value: `+${Number(ldexVal).toLocaleString()} LDEX` },
       ];
       rows.push({ label: "STREAK", value: `Day ${Number(newInfo.streak)}` });
-      rows.push(ldPointsRow(ldGained));
+      rows.push(ldPointsRow({ ldGained, ldCapped }));
       showSuccess({
         title: "MISSION SUCCESS",
         subtitle: "PROTOCOL VERIFICATION COMPLETE",
@@ -828,11 +825,11 @@ const DeployPage = () => {
 
   const renderDeployForm = () => {
     switch (selectedType) {
-      case 'erc20': return <ERC20Form onDeployed={() => { fetchHistory(); fetchData(); }} />;
-      case 'nft': return <NFTForm onDeployed={fetchHistory} />;
-      case 'staking': return <StakingForm onDeployed={fetchHistory} />;
-      case 'vesting': return <VestingForm onDeployed={fetchHistory} />;
-      case 'factory': return <TokenFactoryForm onDeployed={fetchHistory} />;
+      case 'erc20': return <ERC20Form onDeployed={afterAnyDeploy} />;
+      case 'nft': return <NFTForm onDeployed={afterAnyDeploy} />;
+      case 'staking': return <StakingForm onDeployed={afterAnyDeploy} />;
+      case 'vesting': return <VestingForm onDeployed={afterAnyDeploy} />;
+      case 'factory': return <TokenFactoryForm onDeployed={afterAnyDeploy} />;
       default: return null;
     }
   };
@@ -1071,8 +1068,6 @@ const ERC20Form = ({ onDeployed }: any) => {
     setTxStatus(null);
     setTxHash(null);
 
-    const beforeLd = address ? await readLDPoints(address) : { total: 0n };
-
     try {
       const result = await deployTokenLitDeX({
         name,
@@ -1099,15 +1094,15 @@ const ERC20Form = ({ onDeployed }: any) => {
       setTimeout(async () => {
         try { if (address) await refreshDeployDaily(); } catch { /* ignore */ }
         refreshPoints();
-        const afterLd = address ? await readLDPoints(address) : { total: 0n };
-        const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
+        const ldGained = result.ldGained;
+        const ldCapped = result.ldCapped;
         showSuccess({
           title: "TOKEN DEPLOYED",
           subtitle: "PROTOCOL VERIFICATION COMPLETE",
           rows: [
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "STATUS", value: "LIVE ON LITVM" },
-            ldPointsRow(ldGained),
+            ldPointsRow({ ldGained, ldCapped }),
           ],
         });
         onDeployed?.();
@@ -1507,10 +1502,9 @@ contract MNFT is ERC721, Ownable {
       setTxStatus("success");
       const ca = (result as any).tokenAddress as string | undefined;
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${result.txHash}`;
-      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
-      await awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } });
-      const afterLd = address ? await readLDPoints(address) : { total: 0n };
-      const ldGained = Number(afterLd.total - beforeLd.total);
+      const awardResult = await awardActivity({ wallet: address, action: 'deploy', txHash: result.txHash, meta: { type: 'nft' } });
+      const ldGained = awardResult?.credited ?? 0;
+      const ldCapped = !!awardResult?.capped;
       const shortHash = `${result.txHash.slice(0, 6)}...${result.txHash.slice(-4)}`;
       try {
         if (address) addNotif(address, {
@@ -1526,7 +1520,7 @@ contract MNFT is ERC721, Ownable {
           { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "LIVE ON LITVM" },
-          ldPointsRow(ldGained),
+          ldPointsRow({ ldGained, ldCapped }),
         ],
       });
 
@@ -2002,11 +1996,10 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
         label || "Staking Pool"
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
-      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
-      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } });
+      const awardResult = await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'staking' } });
       {
-        const afterLd = address ? await readLDPoints(address) : { total: 0n };
-        const ldGained = Number(afterLd.total - beforeLd.total);
+        const ldGained = awardResult?.credited ?? 0;
+        const ldCapped = !!awardResult?.capped;
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.contractAddress;
@@ -2017,7 +2010,7 @@ contract ldex is Ownable, ReentrancyGuard, Pausable {
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
-            ldPointsRow(ldGained),
+            ldPointsRow({ ldGained, ldCapped }),
           ],
         });
 
@@ -2276,11 +2269,10 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
         label || "Token Vesting"
       );
       setTxInfo({ hash: res.txHash, address: res.contractAddress });
-      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
-      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } });
+      const awardResult = await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'vesting' } });
       {
-        const afterLd = address ? await readLDPoints(address) : { total: 0n };
-        const ldGained = Number(afterLd.total - beforeLd.total);
+        const ldGained = awardResult?.credited ?? 0;
+        const ldCapped = !!awardResult?.capped;
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
         const ca = res.contractAddress;
@@ -2291,7 +2283,7 @@ contract ${label.replace(/\s+/g, '') || "TokenVesting"} is Ownable, ReentrancyGu
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
-            ldPointsRow(ldGained),
+            ldPointsRow({ ldGained, ldCapped }),
           ],
         });
 
@@ -2577,11 +2569,10 @@ contract LitVMTokenFactory is Ownable {
         pausable
       });
       setTxInfo({ hash: res.txHash, address: res.tokenAddress });
-      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
-      await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } });
+      const awardResult = await awardActivity({ wallet: address, action: 'deploy', txHash: res.txHash, meta: { type: 'tokenfactory' } });
       {
-        const afterLd = address ? await readLDPoints(address) : { total: 0n };
-        const ldGained = Number(afterLd.total - beforeLd.total);
+        const ldGained = awardResult?.credited ?? 0;
+        const ldCapped = !!awardResult?.capped;
         const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${res.txHash}`;
 
         const shortHash = `${res.txHash.slice(0, 6)}...${res.txHash.slice(-4)}`;
@@ -2593,7 +2584,7 @@ contract LitVMTokenFactory is Ownable {
             { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
             { label: "TRANSACTION", value: shortHash, href: explorerUrl },
             { label: "STATUS", value: "LIVE ON LITVM" },
-            ldPointsRow(ldGained),
+            ldPointsRow({ ldGained, ldCapped }),
           ],
         });
 
@@ -6657,7 +6648,6 @@ const MessengerPage = () => {
       const { sendMessage } = await import('./lib/litdex-core-logic');
       const target = msgType === 'public' ? 'public' : recipient;
 
-      const beforeLd = address ? await readLDPoints(address) : { total: 0n };
       const result = await sendMessage(target, content);
       const sentHash = result.hash;
       setLastSentHash(sentHash);
@@ -6671,8 +6661,8 @@ const MessengerPage = () => {
       await fetchStats();
       await fetchBackendPoints();
 
-      const afterLd = address ? await readLDPoints(address) : { total: 0n };
-      const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
+      const ldGained = result.ldGained;
+      const ldCapped = result.ldCapped;
 
       const explorerUrl = `${litvmChain.blockExplorers.default.url}/tx/${sentHash}`;
       const shortHash = `${sentHash.slice(0, 6)}...${sentHash.slice(-4)}`;
@@ -6683,7 +6673,7 @@ const MessengerPage = () => {
         rows: [
           { label: "TRANSACTION", value: shortHash, href: explorerUrl },
           { label: "STATUS", value: "ON-CHAIN DELIVERED" },
-          ldPointsRow(ldGained),
+          ldPointsRow({ ldGained, ldCapped }),
         ],
       });
 
