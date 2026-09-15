@@ -1078,13 +1078,7 @@ const ERC20Form = ({ onDeployed }: any) => {
     setTxStatus(null);
     setTxHash(null);
 
-    let dailyBefore = 0n;
-    try {
-      if (address) {
-        const before = await readPoints(address);
-        dailyBefore = before.deployDaily;
-      }
-    } catch { /* ignore */ }
+    const beforeLd = address ? await readLDPoints(address) : { total: 0n };
 
     try {
       const result = await deployTokenLitDeX({
@@ -1112,28 +1106,20 @@ const ERC20Form = ({ onDeployed }: any) => {
       setTimeout(async () => {
         try { if (address) await refreshDeployDaily(); } catch { /* ignore */ }
         refreshPoints();
-        const capReached = dailyBefore >= 100n;
-        if (capReached) {
-          showSuccess({
-            title: "DAILY CAP REACHED",
-            subtitle: "MAX 20 TOKEN DEPLOYS PER DAY",
-            rows: [
-              { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
-              { label: "STATUS", value: "LIVE ON LITVM" },
-            ],
-          });
-        } else {
-          showSuccess({
-            title: "TOKEN DEPLOYED",
-            subtitle: "PROTOCOL VERIFICATION COMPLETE",
-            rows: [
-              { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
-              { label: "STATUS", value: "LIVE ON LITVM" },
-            ],
-          });
-        }
+        const afterLd = address ? await readLDPoints(address) : { total: 0n };
+        const ldGained = address ? Number(afterLd.total - beforeLd.total) : 0;
+        showSuccess({
+          title: "TOKEN DEPLOYED",
+          subtitle: "PROTOCOL VERIFICATION COMPLETE",
+          rows: [
+            { label: "CONTRACT", value: ca ? `${ca.slice(0,6)}...${ca.slice(-4)}` : "—" },
+            { label: "STATUS", value: "LIVE ON LITVM" },
+            ldPointsRow(ldGained),
+          ],
+        });
         onDeployed?.();
       }, 3000);
+
     } catch (err) {
       console.error("Deploy error:", err);
       setTxStatus("failed");
