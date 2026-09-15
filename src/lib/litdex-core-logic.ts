@@ -77,7 +77,7 @@ export const sepoliaReadProvider = new JsonRpcProvider(SEPOLIA_RPC_URL);
 // ── AMM ─────────────────────────────────────────────────────────────────
 export const NATIVE_SENTINEL = "NATIVE";
 export const LITESWAP_FACTORY = "0xb923f1481384386D447C51051907F8CadAFF5f3E";
-export const LITESWAP_ROUTER  = "0xFa1f665C6ee5167f78454d85bc56D263D5da4576";
+export const LITESWAP_ROUTER  = "0xA24DaAC23f9F9B6a1E01A4fE5DEf63270a9cFD22";
 export const OMNIFUN_ROUTER   = "0xe351c47c3b96844F46e9808a7D5bBa8101BfFB57";
 export const DEFAULT_FACTORY  = LITESWAP_FACTORY;
 export const DEFAULT_ROUTER   = LITESWAP_ROUTER;
