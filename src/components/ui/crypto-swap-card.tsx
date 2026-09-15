@@ -27,14 +27,13 @@ import {
   getUserLPPositions,
   LPPosition,
   readProvider,
-  readLDPoints,
   ldPointsRow
 
 } from "@/lib/litdex-core-logic"
 import type { RouterKey } from "@/lib/litdex-core-logic"
 import { ChevronDown } from "lucide-react"
 import { addNotif } from "@/lib/notifications"
-import { showSuccess, showError, refreshPoints, awardActivity } from "@/lib/feedback"
+import { showSuccess, showError, refreshPoints } from "@/lib/feedback"
 
 type Coin = {
   address: string
