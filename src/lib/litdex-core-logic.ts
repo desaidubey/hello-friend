@@ -731,17 +731,32 @@ export async function deployTokenLitDeX(opts: {
 /** Read total deployed count (display = on-chain + DEPLOY_COUNT_BASE). */
 export async function readTotalDeployed(): Promise<number> {
   const c = new Contract(LITDEX_DEPLOYER_ADDRESS, LITDEX_DEPLOYER_ABI, readProvider);
+  let erc20Count = 0;
   let lastErr: any;
   for (let i = 0; i < 4; i++) {
     try {
-      const n = await c.totalDeployed();
-      return Number(n) + DEPLOY_COUNT_BASE;
+      erc20Count = Number(await c.totalDeployed());
+      lastErr = null;
+      break;
     } catch (e) {
       lastErr = e;
       await new Promise((r) => setTimeout(r, 800 * (i + 1)));
     }
   }
-  throw lastErr;
+  if (lastErr) throw lastErr;
+
+  let tokenFactoryCount = 0;
+  try {
+    tokenFactoryCount = await getLegacyTotalDeployedDisplay() - DEPLOY_COUNT_BASE;
+  } catch { /* non-fatal */ }
+
+  let backendCounts = { nft: 0, staking: 0, vesting: 0 };
+  try {
+    const r = await fetch("https://api.test-hub.xyz/deploy/combined-count");
+    if (r.ok) backendCounts = await r.json();
+  } catch { /* non-fatal */ }
+
+  return erc20Count + tokenFactoryCount + backendCounts.nft + backendCounts.staking + backendCounts.vesting + DEPLOY_COUNT_BASE;
 }
 
 /** Per-token actions (mint/burn/pause/unpause). Token must be from full TokenFactory. */
